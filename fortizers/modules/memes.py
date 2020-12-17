@@ -1,4 +1,5 @@
 import asyncio
+import textwrap
 import base64
 import glob
 import io
@@ -16,8 +17,9 @@ import nltk # shitty lib, but it does work
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageOps, ImageFont, ImageDraw
 from spongemock import spongemock
+from telethon.tl.types import DocumentAttributeFilename
 from telegram import Message, Update, Bot
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, run_async
@@ -287,40 +289,41 @@ def spongemocktext(update, context):
 @spamcheck
 @run_async
 def mmf(update, context):
-    if not event.reply_to_msg_id:
-        await event.edit(
+    message = update.effective_message
+    if not message.reply_to_message:
+        message.reply_text(
             "`Syntax: reply to an image with .mmf` 'text on top' ; 'text on bottom' "
         )
         return
  
-    reply_message = await event.get_reply_message()
+    reply_message = message.reply_to_message()
     if not reply_message.media:
-        await event.edit("```reply to a image/sticker/gif```")
+        await context.bot.editMessageText("```reply to a image/sticker/gif```")
         return
-    await bot.download_file(reply_message.media)
-    if event.is_reply:
+    await context.bot.download_file(reply_message.media)
+    if context.bot.is_reply:
         data = await check_media(reply_message)
         if isinstance(data, bool):
-            await event.edit("`Unsupported Files...`")
+            await context.bot.editMessageText("`Unsupported Files...`")
             return
  
-        await event.edit(
-            "```Transfiguration Time! Mwahaha Memifying this image! (」ﾟﾛﾟ)｣ ```"
+        await context.bot.editMessageText(
+            "Memeifying this image.."
         )
         await asyncio.sleep(5)
-        text = event.pattern_match.group(1)
-        if event.reply_to_msg_id:
+        text = context.bot.pattern_match.group(1)
+        if context.bot.reply_to_msg_id:
             file_name = "meme.jpg"
             to_download_directory = ./downloads/
             downloaded_file_name = os.path.join(
                 to_download_directory, file_name)
-            downloaded_file_name = await bot.download_media(
+            downloaded_file_name = await context.bot.download_media(
                 reply_message, downloaded_file_name,
             )
             dls_loc = downloaded_file_name
         webp_file = await draw_meme_text(dls_loc, text)
-        await event.client.send_file(event.chat_id, webp_file, reply_to=event.reply_to_msg_id)
-        await event.delete()
+        await context.bot.client.send_file(context.bot.chat_id, webp_file, reply_to=context.bot.reply_to_msg_id)
+        await context.bot.delete()
         os.remove(webp_file)
         os.remove(dls_loc)
  
