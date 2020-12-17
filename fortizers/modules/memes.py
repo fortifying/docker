@@ -298,32 +298,32 @@ def mmf(update, context):
  
     reply_message = message.reply_to_message()
     if not reply_message.media:
-        await context.bot.editMessageText("```reply to a image/sticker/gif```")
+        context.bot.editMessageText("```reply to a image/sticker/gif```")
         return
-    await context.bot.download_file(reply_message.media)
+    context.bot.download_file(reply_message.media)
     if context.bot.is_reply:
-        data = await check_media(reply_message)
+        data = check_media(reply_message)
         if isinstance(data, bool):
-            await context.bot.editMessageText("`Unsupported Files...`")
+            context.bot.editMessageText("`Unsupported Files...`")
             return
  
-        await context.bot.editMessageText(
+        context.bot.editMessageText(
             "Memeifying this image.."
         )
-        await asyncio.sleep(5)
+        asyncio.sleep(5)
         text = context.bot.pattern_match.group(1)
         if context.bot.reply_to_msg_id:
             file_name = "meme.jpg"
             to_download_directory = ./downloads/
             downloaded_file_name = os.path.join(
                 to_download_directory, file_name)
-            downloaded_file_name = await context.bot.download_media(
+            downloaded_file_name = context.bot.download_media(
                 reply_message, downloaded_file_name,
             )
             dls_loc = downloaded_file_name
-        webp_file = await draw_meme_text(dls_loc, text)
-        await context.bot.client.send_file(context.bot.chat_id, webp_file, reply_to=context.bot.reply_to_msg_id)
-        await context.bot.delete()
+        webp_file = draw_meme_text(dls_loc, text)
+        context.bot.client.send_file(context.bot.chat_id, webp_file, reply_to=context.bot.reply_to_msg_id)
+        context.bot.delete()
         os.remove(webp_file)
         os.remove(dls_loc)
  
