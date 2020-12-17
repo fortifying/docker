@@ -4,14 +4,14 @@ __lang__ = "🇮🇩 Indonesia"
 id = {
 # main stuff
 	"start_text": """
-Hai {}, nama Aku {}! Aku seorang manajer grup yang dikelola oleh [Tuan saya](t.me/fortifying)
+Hai {}, Saya {}! Saya seorang manajer grup yang dikelola oleh [Tuan saya](t.me/fortifying)
 
 Anda dapat menemukan daftar perintah yang tersedia dengan /help.
 """,
 	"help_text": """
-Hai! Aku adalah FortizersWatcher.
-Aku adalah bot manajemen grup dengan beberapa kelebihan yang menyenangkan! Silahkan lihat berikut ini untuk beberapa ide dari \
-hal-hal yang bisa Aku bantu.
+Hai! Saya FortizersWatcher.
+Saya adalah bot manajemen grup dengan beberapa kelebihan yang menyenangkan! Silahkan lihat berikut ini untuk beberapa ide dari \
+hal-hal yang bisa saya bantu.
 
 *Perintah utama* yang tersedia:
  - /start: mulai bot
