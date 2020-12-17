@@ -126,25 +126,28 @@ def new_member(update, context):
     should_welc, cust_welcome, cust_content, welc_type = sql.get_welc_pref(chat.id)
  
     cleanserv = sql.clean_service(chat.id)
-    if cleanserv:
-        new_members = update.effective_message.new_chat_members
-        for new_mem in new_members:
-            try:
-                dispatcher.bot.delete_message(chat.id, update.message.message_id)
-            except BadRequest:
-                pass
     if should_welc:
         sent = None
         new_members = update.effective_message.new_chat_members
+ 
         for new_mem in new_members:
+            reply = update.message.message_id
+            cleanserv = sql.clean_service(chat.id)
+            # Clean service welcome
+            if cleanserv:
+                reply = False
+                try:
+                    dispatcher.bot.delete_message(
+                        chat.id, update.message.message_id)
+                except BadRequest:
+                    pass
+
             # Give the owner a special welcome
-            if OWNER_SPECIAL and new_mem.id == OWNER_ID:
-                if cleanserv:
-                    context.bot.send_message(chat.id, tl(update.effective_message,
-                                                         "My Master has come home! Let's start this party! 😆"))
-                else:
-                    send_message(update.effective_message,
-                                 tl(update.effective_message, "My Master has come home! Let's start this party! 😆"))
+            if new_mem.id == OWNER_ID:
+                update.effective_message.reply_text(
+                    "Eyyy My Master has come! let the party begins! 😆",
+                    reply_to_message_id=reply,
+                )
                 continue
  
             # Don't welcome yourself

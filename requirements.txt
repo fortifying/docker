@@ -2,7 +2,7 @@ future
 emoji
 requests
 sqlalchemy
-python-telegram-bot
+python-telegram-bot==12.8
 jikanpy
 psycopg2-binary
 feedparser
@@ -29,4 +29,5 @@ pytz
 covid
 kbbi
 speedtest-cli
+spamwatch
 python-rapidjson>=0.9.1
