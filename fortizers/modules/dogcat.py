@@ -7,11 +7,11 @@ from telegram.ext import run_async
 from fortizers import dispatcher, DOG_API_KEY, CAT_API_KEY
 from fortizers.modules.disable import DisableAbleCommandHandler
 
-DOG_URL = 'http://api.thedogapi.com/v1/images/search'
-CAT_URL = 'http://api.thecatapi.com/v1/images/search'
+DOG_URL = "http://api.thedogapi.com/v1/images/search"
+CAT_URL = "http://api.thecatapi.com/v1/images/search"
 
 
-class dogapi():
+class dogapi:
     def __init__(self, loop, type):
         headers = {"x-api-key": DOG_API_KEY}
         self.params = {"mime_types": type}
@@ -65,7 +65,7 @@ def doggif(update, context):
     update.effective_message.reply_video(dog[0]["url"])
 
 
-class catapi():
+class catapi:
     def __init__(self, loop, type):
         headers = {"x-api-key": CAT_API_KEY}
         self.params = {"mime_types": type}
@@ -135,18 +135,26 @@ __help__ = """
 
 __mod_name__ = "Dogs and Cats"
 
-if (DOG_API_KEY != None):
+if DOG_API_KEY != None:
     DOG_HANDLER = DisableAbleCommandHandler("dog", dog, admin_ok=True, pass_args=False)
-    DOGHD_HANDLER = DisableAbleCommandHandler("doghd", doghd, admin_ok=True, pass_args=False)
-    DOGGIF_HANDLER = DisableAbleCommandHandler("doggif", doggif, admin_ok=True, pass_args=False)
+    DOGHD_HANDLER = DisableAbleCommandHandler(
+        "doghd", doghd, admin_ok=True, pass_args=False
+    )
+    DOGGIF_HANDLER = DisableAbleCommandHandler(
+        "doggif", doggif, admin_ok=True, pass_args=False
+    )
     dispatcher.add_handler(DOG_HANDLER)
     dispatcher.add_handler(DOGHD_HANDLER)
     dispatcher.add_handler(DOGGIF_HANDLER)
 
-if (CAT_API_KEY != None):
+if CAT_API_KEY != None:
     CAT_HANDLER = DisableAbleCommandHandler("cat", cat, admin_ok=True, pass_args=False)
-    CATHD_HANDLER = DisableAbleCommandHandler("cathd", cathd, admin_ok=True, pass_args=False)
-    CATGIF_HANDLER = DisableAbleCommandHandler("catgif", catgif, admin_ok=True, pass_args=False)
+    CATHD_HANDLER = DisableAbleCommandHandler(
+        "cathd", cathd, admin_ok=True, pass_args=False
+    )
+    CATGIF_HANDLER = DisableAbleCommandHandler(
+        "catgif", catgif, admin_ok=True, pass_args=False
+    )
     dispatcher.add_handler(CAT_HANDLER)
     dispatcher.add_handler(CATHD_HANDLER)
     dispatcher.add_handler(CATGIF_HANDLER)

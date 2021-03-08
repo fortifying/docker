@@ -44,14 +44,20 @@ if is_module_loaded(FILENAME):
             if isinstance(update, Update) and update.effective_message:
                 message = update.effective_message
 
-                if message.text and len(message.text) > 1 and any(message.text.startswith(start) for start in CMD_STARTERS):
-                    command = message.text[1:message.entities[0].length]
+                if (
+                    message.text
+                    and len(message.text) > 1
+                    and any(message.text.startswith(start) for start in CMD_STARTERS)
+                ):
+                    command = message.text[1 : message.entities[0].length]
                     args = message.text.split()[1:]
-                    command = command.split('@')
+                    command = command.split("@")
                     command.append(message.bot.username)
 
-                    if not (command[0].lower() in self.command
-                            and command[1].lower() == message.bot.username.lower()):
+                    if not (
+                        command[0].lower() in self.command
+                        and command[1].lower() == message.bot.username.lower()
+                    ):
                         return None
 
                     filter_result = self.filters(update)
@@ -61,7 +67,9 @@ if is_module_loaded(FILENAME):
                         # disabled, admincmd, user admin
                         if sql.is_command_disabled(chat.id, command[0].lower()):
                             # check if command was disabled
-                            is_disabled = command[0] in ADMIN_CMDS and is_user_admin(chat, user.id)
+                            is_disabled = command[0] in ADMIN_CMDS and is_user_admin(
+                                chat, user.id
+                            )
                             if not is_disabled and sql.is_disable_del(chat.id):
                                 # disabled and should delete
                                 update.effective_message.delete()
@@ -74,7 +82,6 @@ if is_module_loaded(FILENAME):
                     else:
                         return False
 
-
     class DisableAbleMessageHandler(MessageHandler):
         def __init__(self, pattern, callback, friendly="", **kwargs):
             super().__init__(pattern, callback, **kwargs)
@@ -85,8 +92,9 @@ if is_module_loaded(FILENAME):
         def check_update(self, update):
             if isinstance(update, Update) and update.effective_message:
                 chat = update.effective_chat
-                return self.filters(update) and not sql.is_command_disabled(chat.id, self.friendly)
-
+                return self.filters(update) and not sql.is_command_disabled(
+                    chat.id, self.friendly
+                )
 
     @run_async
     @spamcheck
@@ -103,7 +111,13 @@ if is_module_loaded(FILENAME):
             chat_name = dispatcher.bot.getChat(conn).title
         else:
             if update.effective_message.chat.type == "private":
-                send_message(update.effective_message, languages.tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                    ),
+                )
                 return ""
             chat = update.effective_chat
             chat_id = update.effective_chat.id
@@ -117,17 +131,33 @@ if is_module_loaded(FILENAME):
             if disable_cmd in set(DISABLE_CMDS + DISABLE_OTHER):
                 sql.disable_command(chat.id, disable_cmd)
                 if conn:
-                    text = languages.tl(update.effective_message, "Menonaktifkan penggunaan `{}` pada *{}*").format(disable_cmd, chat_name)
+                    text = languages.tl(
+                        update.effective_message,
+                        "Menonaktifkan penggunaan `{}` pada *{}*",
+                    ).format(disable_cmd, chat_name)
                 else:
-                    text = languages.tl(update.effective_message, "Menonaktifkan penggunaan `{}`").format(disable_cmd)
-                send_message(update.effective_message, text,
-                                                    parse_mode=ParseMode.MARKDOWN)
+                    text = languages.tl(
+                        update.effective_message, "Menonaktifkan penggunaan `{}`"
+                    ).format(disable_cmd)
+                send_message(
+                    update.effective_message, text, parse_mode=ParseMode.MARKDOWN
+                )
             else:
-                send_message(update.effective_message, languages.tl(update.effective_message, "Perintah itu tidak bisa dinonaktifkan"))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Perintah itu tidak bisa dinonaktifkan",
+                    ),
+                )
 
         else:
-            send_message(update.effective_message, languages.tl(update.effective_message, "Apa yang harus saya nonaktifkan?"))
-
+            send_message(
+                update.effective_message,
+                languages.tl(
+                    update.effective_message, "Apa yang harus saya nonaktifkan?"
+                ),
+            )
 
     @run_async
     @spamcheck
@@ -144,7 +174,13 @@ if is_module_loaded(FILENAME):
             chat_name = dispatcher.bot.getChat(conn).title
         else:
             if update.effective_message.chat.type == "private":
-                send_message(update.effective_message, languages.tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                    ),
+                )
                 return ""
             chat = update.effective_chat
             chat_id = update.effective_chat.id
@@ -157,17 +193,29 @@ if is_module_loaded(FILENAME):
 
             if sql.enable_command(chat.id, enable_cmd):
                 if conn:
-                    text = languages.tl(update.effective_message, "Diaktifkan penggunaan `{}` pada *{}*").format(enable_cmd, chat_name)
+                    text = languages.tl(
+                        update.effective_message, "Diaktifkan penggunaan `{}` pada *{}*"
+                    ).format(enable_cmd, chat_name)
                 else:
-                    text = languages.tl(update.effective_message, "Diaktifkan penggunaan `{}`").format(enable_cmd)
-                send_message(update.effective_message, text,
-                                                    parse_mode=ParseMode.MARKDOWN)
+                    text = languages.tl(
+                        update.effective_message, "Diaktifkan penggunaan `{}`"
+                    ).format(enable_cmd)
+                send_message(
+                    update.effective_message, text, parse_mode=ParseMode.MARKDOWN
+                )
             else:
-                send_message(update.effective_message, languages.tl(update.effective_message, "Apakah itu bahkan dinonaktifkan?"))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message, "Apakah itu bahkan dinonaktifkan?"
+                    ),
+                )
 
         else:
-            send_message(update.effective_message, languages.tl(update.effective_message, "Apa yang harus saya aktifkan?"))
-
+            send_message(
+                update.effective_message,
+                languages.tl(update.effective_message, "Apa yang harus saya aktifkan?"),
+            )
 
     @run_async
     @spamcheck
@@ -177,10 +225,21 @@ if is_module_loaded(FILENAME):
             result = ""
             for cmd in set(DISABLE_CMDS + DISABLE_OTHER):
                 result += " - `{}`\n".format(escape_markdown(cmd))
-            send_message(update.effective_message, languages.tl(update.effective_message, "Perintah berikut dapat diubah:\n{}").format(result),
-                                                parse_mode=ParseMode.MARKDOWN)
+            send_message(
+                update.effective_message,
+                languages.tl(
+                    update.effective_message, "Perintah berikut dapat diubah:\n{}"
+                ).format(result),
+                parse_mode=ParseMode.MARKDOWN,
+            )
         else:
-            send_message(update.effective_message, languages.tl(update.effective_message, "Tidak ada perintah yang dapat dinonaktifkan."))
+            send_message(
+                update.effective_message,
+                languages.tl(
+                    update.effective_message,
+                    "Tidak ada perintah yang dapat dinonaktifkan.",
+                ),
+            )
 
     @run_async
     @spamcheck
@@ -193,17 +252,42 @@ if is_module_loaded(FILENAME):
             args = msg.text.split(None, 1)[1]
             if args == "yes" or args == "on" or args == "ya":
                 sql.disabledel_set(chat.id, True)
-                send_message(update.effective_message, languages.tl(update.effective_message, "Ketika command di nonaktifkan, maka saya *akan menghapus* pesan command tsb."), parse_mode="markdown")
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Ketika command di nonaktifkan, maka saya *akan menghapus* pesan command tsb.",
+                    ),
+                    parse_mode="markdown",
+                )
                 return
             elif args == "no" or args == "off":
                 sql.disabledel_set(chat.id, False)
-                send_message(update.effective_message, languages.tl(update.effective_message, "Saya *tidak akan menghapus* pesan dari command yang di nonaktifkan."), parse_mode="markdown")
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Saya *tidak akan menghapus* pesan dari command yang di nonaktifkan.",
+                    ),
+                    parse_mode="markdown",
+                )
                 return
             else:
-                send_message(update.effective_message, languages.tl(update.effective_message, "Argumen tidak dikenal - harap gunakan 'yes', atau 'no'."))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Argumen tidak dikenal - harap gunakan 'yes', atau 'no'.",
+                    ),
+                )
         else:
-            send_message(update.effective_message, languages.tl(update.effective_message, "Opsi disable del saat ini: *{}*").format("Enabled" if sql.is_disable_del(chat.id) else "Disabled"), parse_mode="markdown")
-
+            send_message(
+                update.effective_message,
+                languages.tl(
+                    update.effective_message, "Opsi disable del saat ini: *{}*"
+                ).format("Enabled" if sql.is_disable_del(chat.id) else "Disabled"),
+                parse_mode="markdown",
+            )
 
     # do not async
     def build_curr_disabled(chat_id: Union[str, int]) -> str:
@@ -214,8 +298,9 @@ if is_module_loaded(FILENAME):
         result = ""
         for cmd in disabled:
             result += " - `{}`\n".format(escape_markdown(cmd))
-        return languages.tl(chat_id, "Perintah-perintah berikut saat ini dibatasi:\n{}").format(result)
-
+        return languages.tl(
+            chat_id, "Perintah-perintah berikut saat ini dibatasi:\n{}"
+        ).format(result)
 
     @run_async
     @spamcheck
@@ -229,7 +314,13 @@ if is_module_loaded(FILENAME):
             chat_name = dispatcher.bot.getChat(conn).title
         else:
             if update.effective_message.chat.type == "private":
-                send_message(update.effective_message, languages.tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                    ),
+                )
                 return ""
             chat = update.effective_chat
             chat_id = update.effective_chat.id
@@ -238,33 +329,36 @@ if is_module_loaded(FILENAME):
         text = build_curr_disabled(chat.id)
         send_message(update.effective_message, text, parse_mode=ParseMode.MARKDOWN)
 
-
     def __stats__():
-        return languages.tl(OWNER_ID, "{} item yang dinonaktifkan, pada {} obrolan.").format(sql.num_disabled(), sql.num_chats())
-
+        return languages.tl(
+            OWNER_ID, "{} item yang dinonaktifkan, pada {} obrolan."
+        ).format(sql.num_disabled(), sql.num_chats())
 
     def __import_data__(chat_id, data):
-        disabled = data.get('disabled', {})
+        disabled = data.get("disabled", {})
         for disable_cmd in disabled:
             sql.disable_command(chat_id, disable_cmd)
-
 
     def __migrate__(old_chat_id, new_chat_id):
         sql.migrate_chat(old_chat_id, new_chat_id)
 
-
     def __chat_settings__(chat_id, user_id):
         return build_curr_disabled(chat_id)
-
 
     __mod_name__ = "Command disabling"
 
     __help__ = "disable_help"
 
-    DISABLE_HANDLER = CommandHandler("disable", disable, pass_args=True)#, filters=Filters.group)
-    ENABLE_HANDLER = CommandHandler("enable", enable, pass_args=True)#, filters=Filters.group)
-    COMMANDS_HANDLER = CommandHandler(["cmds", "disabled"], commands)#, filters=Filters.group)
-    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds)#, filters=Filters.group)
+    DISABLE_HANDLER = CommandHandler(
+        "disable", disable, pass_args=True
+    )  # , filters=Filters.group)
+    ENABLE_HANDLER = CommandHandler(
+        "enable", enable, pass_args=True
+    )  # , filters=Filters.group)
+    COMMANDS_HANDLER = CommandHandler(
+        ["cmds", "disabled"], commands
+    )  # , filters=Filters.group)
+    TOGGLE_HANDLER = CommandHandler("listcmds", list_cmds)  # , filters=Filters.group)
     DISABLEDEL_HANDLER = CommandHandler("disabledel", disable_del)
 
     dispatcher.add_handler(DISABLE_HANDLER)

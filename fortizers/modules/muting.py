@@ -9,8 +9,16 @@ from telegram.ext.dispatcher import run_async
 from telegram.utils.helpers import mention_html
 
 from fortizers import dispatcher, LOGGER, spamcheck
-from fortizers.modules.helper_funcs.chat_status import bot_admin, user_admin, is_user_admin, can_restrict
-from fortizers.modules.helper_funcs.extraction import extract_user, extract_user_and_text
+from fortizers.modules.helper_funcs.chat_status import (
+    bot_admin,
+    user_admin,
+    is_user_admin,
+    can_restrict,
+)
+from fortizers.modules.helper_funcs.extraction import (
+    extract_user,
+    extract_user_and_text,
+)
 from fortizers.modules.helper_funcs.string_handling import extract_time
 from fortizers.modules.log_channel import loggable
 from fortizers.modules.connection import connected
@@ -23,7 +31,7 @@ from fortizers.modules.helper_funcs.alternate import send_message
 @run_async
 @spamcheck
 @bot_admin
-#@can_restrict
+# @can_restrict
 @user_admin
 @loggable
 def mute(update, context):
@@ -34,7 +42,13 @@ def mute(update, context):
 
     user_id = extract_user(message, args)
     if not user_id or user_id == "error":
-        send_message(update.effective_message, tl(update.effective_message, "Anda harus memberi saya nama pengguna untuk membungkam, atau membalas seseorang untuk dibisukan."))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda harus memberi saya nama pengguna untuk membungkam, atau membalas seseorang untuk dibisukan.",
+            ),
+        )
         return ""
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
@@ -45,7 +59,13 @@ def mute(update, context):
         text = tl(update.effective_message, "Terbisukan pada *{}*! 😆").format(chat_name)
     else:
         if update.effective_message.chat.type == "private":
-            update.effective_send_message(update.effective_message, tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+            update.effective_send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                ),
+            )
             return ""
         chat = update.effective_chat
         chat_id = update.effective_chat.id
@@ -53,34 +73,64 @@ def mute(update, context):
         text = tl(update.effective_message, "Terbisukan! 😆")
 
     if user_id == context.bot.id:
-        send_message(update.effective_message, tl(update.effective_message, "Saya tidak akan membungkam diri saya sendiri!"))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Saya tidak akan membungkam diri saya sendiri!",
+            ),
+        )
         return ""
 
     check = context.bot.getChatMember(chat.id, user.id)
-    if check['can_restrict_members'] == False:
-        send_message(update.effective_message, tl(update.effective_message, "Anda tidak punya hak untuk membatasi seseorang."))
+    if check["can_restrict_members"] == False:
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda tidak punya hak untuk membatasi seseorang.",
+            ),
+        )
         return ""
 
     member = chat.get_member(int(user_id))
 
     if member:
         if is_user_admin(chat, user_id, member=member):
-            send_message(update.effective_message, tl(update.effective_message, "Saya tidak bisa menghentikan seorang admin berbicara!"))
+            send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Saya tidak bisa menghentikan seorang admin berbicara!",
+                ),
+            )
 
         elif member.can_send_messages is None or member.can_send_messages:
-            context.bot.restrict_chat_member(chat.id, user_id, permissions=ChatPermissions(can_send_messages=False))
+            context.bot.restrict_chat_member(
+                chat.id, user_id, permissions=ChatPermissions(can_send_messages=False)
+            )
             send_message(update.effective_message, text, parse_mode="markdown")
-            return "<b>{}:</b>" \
-                   "\n#MUTE" \
-                   "\n<b>Admin:</b> {}" \
-                   "\n<b>User:</b> {}".format(html.escape(chat.title),
-                                              mention_html(user.id, user.first_name),
-                                              mention_html(member.user.id, member.user.first_name))
+            return (
+                "<b>{}:</b>"
+                "\n#MUTE"
+                "\n<b>Admin:</b> {}"
+                "\n<b>User:</b> {}".format(
+                    html.escape(chat.title),
+                    mention_html(user.id, user.first_name),
+                    mention_html(member.user.id, member.user.first_name),
+                )
+            )
 
         else:
-            send_message(update.effective_message, tl(update.effective_message, "Pengguna ini sudah dibungkam!"))
+            send_message(
+                update.effective_message,
+                tl(update.effective_message, "Pengguna ini sudah dibungkam!"),
+            )
     else:
-        send_message(update.effective_message, tl(update.effective_message, "Pengguna ini tidak ada dalam obrolan!"))
+        send_message(
+            update.effective_message,
+            tl(update.effective_message, "Pengguna ini tidak ada dalam obrolan!"),
+        )
 
     return ""
 
@@ -98,7 +148,13 @@ def unmute(update, context):
 
     user_id = extract_user(message, args)
     if not user_id or user_id == "error":
-        send_message(update.effective_message, tl(update.effective_message, "Anda harus memberi saya nama pengguna untuk menyuarakan, atau membalas seseorang untuk disuarakan."))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda harus memberi saya nama pengguna untuk menyuarakan, atau membalas seseorang untuk disuarakan.",
+            ),
+        )
         return ""
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
@@ -106,11 +162,22 @@ def unmute(update, context):
         chat = dispatcher.bot.getChat(conn)
         chat_id = conn
         chat_name = dispatcher.bot.getChat(conn).title
-        text = tl(update.effective_message, "Pengguna ini sudah bisa untuk berbicara pada *{}*.").format(chat_name)
-        text2 = tl(update.effective_message, "Dia telah disuarakan pada *{}*.").format(chat_name)
+        text = tl(
+            update.effective_message,
+            "Pengguna ini sudah bisa untuk berbicara pada *{}*.",
+        ).format(chat_name)
+        text2 = tl(update.effective_message, "Dia telah disuarakan pada *{}*.").format(
+            chat_name
+        )
     else:
         if update.effective_message.chat.type == "private":
-            update.effective_send_message(update.effective_message, tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+            update.effective_send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                ),
+            )
             return ""
         chat = update.effective_chat
         chat_id = update.effective_chat.id
@@ -119,40 +186,69 @@ def unmute(update, context):
         text2 = "Dia telah disuarakan."
 
     check = context.bot.getChatMember(chat.id, user.id)
-    if check['can_restrict_members'] == False:
-        send_message(update.effective_message, tl(update.effective_message, "Anda tidak punya hak untuk membatasi seseorang."))
+    if check["can_restrict_members"] == False:
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda tidak punya hak untuk membatasi seseorang.",
+            ),
+        )
         return ""
 
     member = chat.get_member(int(user_id))
 
     if member:
         if is_user_admin(chat, user_id, member=member):
-            send_message(update.effective_message, tl(update.effective_message, "Dia adalah admin, apa yang Anda harapkan kepada saya?"))
+            send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Dia adalah admin, apa yang Anda harapkan kepada saya?",
+                ),
+            )
             return ""
 
-        elif member.status != 'kicked' and member.status != 'left':
-            if member.can_send_messages and member.can_send_media_messages \
-                    and member.can_send_other_messages and member.can_add_web_page_previews:
+        elif member.status != "kicked" and member.status != "left":
+            if (
+                member.can_send_messages
+                and member.can_send_media_messages
+                and member.can_send_other_messages
+                and member.can_add_web_page_previews
+            ):
                 send_message(update.effective_message, text, parse_mode="markdown")
                 return ""
             else:
-                context.bot.restrict_chat_member(chat.id, int(user_id),
-                                        permissions=ChatPermissions(
-                                         can_send_messages=True,
-                                         can_send_media_messages=True,
-                                         can_send_other_messages=True,
-                                         can_add_web_page_previews=True)
-                                        )
+                context.bot.restrict_chat_member(
+                    chat.id,
+                    int(user_id),
+                    permissions=ChatPermissions(
+                        can_send_messages=True,
+                        can_send_media_messages=True,
+                        can_send_other_messages=True,
+                        can_add_web_page_previews=True,
+                    ),
+                )
                 send_message(update.effective_message, text2, parse_mode="markdown")
-                return "<b>{}:</b>" \
-                       "\n#UNMUTE" \
-                       "\n<b>Admin:</b> {}" \
-                       "\n<b>User:</b> {}".format(html.escape(chat.title),
-                                                  mention_html(user.id, user.first_name),
-                                                  mention_html(member.user.id, member.user.first_name))
+                return (
+                    "<b>{}:</b>"
+                    "\n#UNMUTE"
+                    "\n<b>Admin:</b> {}"
+                    "\n<b>User:</b> {}".format(
+                        html.escape(chat.title),
+                        mention_html(user.id, user.first_name),
+                        mention_html(member.user.id, member.user.first_name),
+                    )
+                )
     else:
-        send_message(update.effective_message, tl(update.effective_message, "Pengguna ini bahkan tidak dalam obrolan, menyuarakannya tidak akan membuat mereka berbicara lebih dari "
-                           "yang sudah mereka lakukan!"))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Pengguna ini bahkan tidak dalam obrolan, menyuarakannya tidak akan membuat mereka berbicara lebih dari "
+                "yang sudah mereka lakukan!",
+            ),
+        )
 
     return ""
 
@@ -160,7 +256,7 @@ def unmute(update, context):
 @run_async
 @spamcheck
 @bot_admin
-#@can_restrict
+# @can_restrict
 @user_admin
 @loggable
 def temp_mute(update, context):
@@ -175,7 +271,12 @@ def temp_mute(update, context):
         return ""
 
     if not user_id:
-        send_message(update.effective_message, tl(update.effective_message, "Anda sepertinya tidak mengacu pada pengguna."))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message, "Anda sepertinya tidak mengacu pada pengguna."
+            ),
+        )
         return ""
 
     conn = connected(context.bot, update, chat, user.id, need_admin=True)
@@ -185,7 +286,13 @@ def temp_mute(update, context):
         chat_name = dispatcher.bot.getChat(conn).title
     else:
         if update.effective_message.chat.type == "private":
-            update.effective_send_message(update.effective_message, tl(update.effective_message, "Anda bisa lakukan command ini pada grup, bukan pada PM"))
+            update.effective_send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Anda bisa lakukan command ini pada grup, bukan pada PM",
+                ),
+            )
             return ""
         chat = update.effective_chat
         chat_id = update.effective_chat.id
@@ -195,26 +302,53 @@ def temp_mute(update, context):
         member = chat.get_member(user_id)
     except BadRequest as excp:
         if excp.message == "User not found":
-            send_message(update.effective_message, tl(update.effective_message, "Saya tidak dapat menemukan pengguna ini"))
+            send_message(
+                update.effective_message,
+                tl(update.effective_message, "Saya tidak dapat menemukan pengguna ini"),
+            )
             return ""
         else:
             raise
 
     if is_user_admin(chat, user_id, member):
-        send_message(update.effective_message, tl(update.effective_message, "Saya benar-benar berharap dapat membisukan admin..."))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Saya benar-benar berharap dapat membisukan admin...",
+            ),
+        )
         return ""
 
     if user_id == context.bot.id:
-        send_message(update.effective_message, tl(update.effective_message, "Saya tidak akan membisukan diri saya sendiri, apakah kamu gila?"))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Saya tidak akan membisukan diri saya sendiri, apakah kamu gila?",
+            ),
+        )
         return ""
 
     check = context.bot.getChatMember(chat.id, user.id)
-    if check['can_restrict_members'] == False:
-        send_message(update.effective_message, tl(update.effective_message, "Anda tidak punya hak untuk membatasi seseorang."))
+    if check["can_restrict_members"] == False:
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda tidak punya hak untuk membatasi seseorang.",
+            ),
+        )
         return ""
 
     if not reason:
-        send_message(update.effective_message, tl(update.effective_message, "Anda belum menetapkan waktu untuk menonaktifkan pengguna ini!"))
+        send_message(
+            update.effective_message,
+            tl(
+                update.effective_message,
+                "Anda belum menetapkan waktu untuk menonaktifkan pengguna ini!",
+            ),
+        )
         return ""
 
     split_reason = reason.split(None, 1)
@@ -230,37 +364,70 @@ def temp_mute(update, context):
     if not mutetime:
         return ""
 
-    log = "<b>{}:</b>" \
-          "\n#TMUTE" \
-          "\n<b>Admin:</b> {}" \
-          "\n<b>User:</b> {}" \
-          "\n<b>Time:</b> {}".format(html.escape(chat.title), mention_html(user.id, user.first_name),
-                                     mention_html(member.user.id, member.user.first_name), time_val)
+    log = (
+        "<b>{}:</b>"
+        "\n#TMUTE"
+        "\n<b>Admin:</b> {}"
+        "\n<b>User:</b> {}"
+        "\n<b>Time:</b> {}".format(
+            html.escape(chat.title),
+            mention_html(user.id, user.first_name),
+            mention_html(member.user.id, member.user.first_name),
+            time_val,
+        )
+    )
     if reason:
         log += "\n<b>Reason:</b> {}".format(reason)
 
     try:
         if member.can_send_messages is None or member.can_send_messages:
-            context.bot.restrict_chat_member(chat.id, user_id, until_date=mutetime, permissions=ChatPermissions(can_send_messages=False))
+            context.bot.restrict_chat_member(
+                chat.id,
+                user_id,
+                until_date=mutetime,
+                permissions=ChatPermissions(can_send_messages=False),
+            )
             if conn:
-                text = tl(update.effective_message, "Dibisukan untuk *{}* pada *{}*!").format(time_val, chat_name)
+                text = tl(
+                    update.effective_message, "Dibisukan untuk *{}* pada *{}*!"
+                ).format(time_val, chat_name)
             else:
-                text = tl(update.effective_message, "Dibisukan untuk *{}*!").format(time_val)
+                text = tl(update.effective_message, "Dibisukan untuk *{}*!").format(
+                    time_val
+                )
             send_message(update.effective_message, text, parse_mode="markdown")
             return log
         else:
-            send_message(update.effective_message, tl(update.effective_message, "Pengguna ini sudah dibungkam."))
+            send_message(
+                update.effective_message,
+                tl(update.effective_message, "Pengguna ini sudah dibungkam."),
+            )
 
     except BadRequest as excp:
         if excp.message == "Reply message not found":
             # Do not reply
-            send_message(update.effective_message, tl(update.effective_message, "Dibisukan untuk *{}*!").format(time_val), quote=False)
+            send_message(
+                update.effective_message,
+                tl(update.effective_message, "Dibisukan untuk *{}*!").format(time_val),
+                quote=False,
+            )
             return log
         else:
             LOGGER.warning(update)
-            LOGGER.exception("ERROR muting user %s in chat %s (%s) due to %s", user_id, chat.title, chat.id,
-                             excp.message)
-            send_message(update.effective_message, tl(update.effective_message, "Yah sial, aku tidak bisa membisukan pengguna itu."))
+            LOGGER.exception(
+                "ERROR muting user %s in chat %s (%s) due to %s",
+                user_id,
+                chat.title,
+                chat.id,
+                excp.message,
+            )
+            send_message(
+                update.effective_message,
+                tl(
+                    update.effective_message,
+                    "Yah sial, aku tidak bisa membisukan pengguna itu.",
+                ),
+            )
 
     return ""
 
@@ -271,7 +438,9 @@ __mod_name__ = "Muting"
 
 MUTE_HANDLER = DisableAbleCommandHandler("mute", mute, pass_args=True)
 UNMUTE_HANDLER = DisableAbleCommandHandler("unmute", unmute, pass_args=True)
-TEMPMUTE_HANDLER = DisableAbleCommandHandler(["tmute", "tempmute"], temp_mute, pass_args=True)
+TEMPMUTE_HANDLER = DisableAbleCommandHandler(
+    ["tmute", "tempmute"], temp_mute, pass_args=True
+)
 
 dispatcher.add_handler(MUTE_HANDLER)
 dispatcher.add_handler(UNMUTE_HANDLER)

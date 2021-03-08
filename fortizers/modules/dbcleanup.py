@@ -22,7 +22,9 @@ def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
             progress_bar = f"{progress}% completed in getting invalid chats."
             if progress_message:
                 try:
-                    bot.editMessageText(progress_bar, chat_id, progress_message.message_id)
+                    bot.editMessageText(
+                        progress_bar, chat_id, progress_message.message_id
+                    )
                 except:
                     pass
             else:
@@ -91,11 +93,11 @@ def dbcleanup(update, context):
     reply = f"Total invalid chats - {invalid_chat_count}\n"
     reply += f"Total invalid gbanned users - {invalid_gban_count}"
 
-    buttons = [
-        [InlineKeyboardButton("Cleanup DB", callback_data=f"db_cleanup")]
-    ]
+    buttons = [[InlineKeyboardButton("Cleanup DB", callback_data=f"db_cleanup")]]
 
-    update.effective_message.reply_text(reply, reply_markup=InlineKeyboardMarkup(buttons))
+    update.effective_message.reply_text(
+        reply, reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
 
 def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
@@ -111,7 +113,9 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
             progress_bar = f"{progress}% completed in getting muted chats."
             if progress_message:
                 try:
-                    bot.editMessageText(progress_bar, chat_id, progress_message.message_id)
+                    bot.editMessageText(
+                        progress_bar, chat_id, progress_message.message_id
+                    )
                 except:
                     pass
             else:
@@ -153,12 +157,12 @@ def leave_muted_chats(update, context):
     progress_message = message.reply_text("Getting chat count ...")
     muted_chats = get_muted_chats(context.bot, update)
 
-    buttons = [
-        [InlineKeyboardButton("Leave chats", callback_data=f"db_leave_chat")]
-    ]
+    buttons = [[InlineKeyboardButton("Leave chats", callback_data=f"db_leave_chat")]]
 
-    update.effective_message.reply_text(f"I am muted in `{muted_chats}` chats.",
-                                        reply_markup=InlineKeyboardMarkup(buttons))
+    update.effective_message.reply_text(
+        f"I am muted in `{muted_chats}` chats.",
+        reply_markup=InlineKeyboardMarkup(buttons),
+    )
     progress_message.delete()
 
 
@@ -175,17 +179,23 @@ def callback_button(update, context):
 
     if query_type == "db_leave_chat":
         if query.from_user.id in admin_list:
-            context.bot.editMessageText("Leaving chats... 😘", chat_id, message.message_id)
+            context.bot.editMessageText(
+                "Leaving chats... 😘", chat_id, message.message_id
+            )
             chat_count = get_muted_chats(bot, update, True)
             context.bot.sendMessage(chat_id, f"Left {chat_count} chats.")
         else:
             query.answer("You are not allowed to use this.")
     elif query_type == "db_cleanup":
         if query.from_user.id in admin_list:
-            context.bot.editMessageText("Cleaning up DB... 🙂", chat_id, message.message_id)
+            context.bot.editMessageText(
+                "Cleaning up DB... 🙂", chat_id, message.message_id
+            )
             invalid_chat_count = get_invalid_chats(context.bot, update, True)
             invalid_gban_count = get_invalid_gban(context.bot, update, True)
-            reply = "Cleaned up {} chats and {} gbanned users from db! 😎".format(invalid_chat_count, invalid_gban_count)
+            reply = "Cleaned up {} chats and {} gbanned users from db! 😎".format(
+                invalid_chat_count, invalid_gban_count
+            )
             context.bot.sendMessage(chat_id, reply)
         else:
             query.answer("You are not allowed to use this.")
@@ -193,7 +203,7 @@ def callback_button(update, context):
 
 DB_CLEANUP_HANDLER = CommandHandler("dbcleanup", dbcleanup)
 LEAVE_MUTED_CHATS_HANDLER = CommandHandler("leavemutedchats", leave_muted_chats)
-BUTTON_HANDLER = CallbackQueryHandler(callback_button, pattern='db_.*')
+BUTTON_HANDLER = CallbackQueryHandler(callback_button, pattern="db_.*")
 
 dispatcher.add_handler(DB_CLEANUP_HANDLER)
 dispatcher.add_handler(LEAVE_MUTED_CHATS_HANDLER)

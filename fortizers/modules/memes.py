@@ -12,9 +12,10 @@ from io import BytesIO
 from pathlib import Path
 from typing import List
 
-import nltk # shitty lib, but it does work
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
+import nltk  # shitty lib, but it does work
+
+nltk.download("punkt")
+nltk.download("averaged_perceptron_tagger")
 
 from PIL import Image
 from spongemock import spongemock
@@ -28,11 +29,12 @@ from fortizers.modules.disable import DisableAbleCommandHandler
 from fortizers import dispatcher, spamcheck, DEEPFRY_TOKEN
 from fortizers.modules.languages import tl
 
-MAXNUMURL = 'https://raw.githubusercontent.com/atanet90/expression-pack/master/meta'
-WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
+MAXNUMURL = "https://raw.githubusercontent.com/atanet90/expression-pack/master/meta"
+WIDE_MAP = dict((i, i + 0xfee0) for i in range(0x21, 0x7f))
 WIDE_MAP[0x20] = 0x3000
 
 # D A N K modules by @deletescape vvv
+
 
 @spamcheck
 @run_async
@@ -52,23 +54,36 @@ def owo(update, context):
         data = tl(chat.id, "I need a message to meme.")
 
     faces = [
-        '(・`ω´・)', ';;w;;', 'owo', 'UwU', '>w<', '^w^', '\(^o\) (/o^)/',
-        '( ^ _ ^)∠☆', '(ô_ô)', '~:o', ';____;', '(*^*)', '(>_', '(♥_♥)',
-        '*(^O^)*', '((+_+))'
+        "(・`ω´・)",
+        ";;w;;",
+        "owo",
+        "UwU",
+        ">w<",
+        "^w^",
+        "\(^o\) (/o^)/",
+        "( ^ _ ^)∠☆",
+        "(ô_ô)",
+        "~:o",
+        ";____;",
+        "(*^*)",
+        "(>_",
+        "(♥_♥)",
+        "*(^O^)*",
+        "((+_+))",
     ]
-    reply_text = re.sub(r'[rl]', "w", data)
-    reply_text = re.sub(r'[ｒｌ]', "ｗ", data)
-    reply_text = re.sub(r'[RL]', 'W', reply_text)
-    reply_text = re.sub(r'[ＲＬ]', 'Ｗ', reply_text)
-    reply_text = re.sub(r'n([aeiouａｅｉｏｕ])', r'ny\1', reply_text)
-    reply_text = re.sub(r'ｎ([ａｅｉｏｕ])', r'ｎｙ\1', reply_text)
-    reply_text = re.sub(r'N([aeiouAEIOU])', r'Ny\1', reply_text)
-    reply_text = re.sub(r'Ｎ([ａｅｉｏｕＡＥＩＯＵ])', r'Ｎｙ\1', reply_text)
-    reply_text = re.sub(r'\!+', ' ' + random.choice(faces), reply_text)
-    reply_text = re.sub(r'！+', ' ' + random.choice(faces), reply_text)
+    reply_text = re.sub(r"[rl]", "w", data)
+    reply_text = re.sub(r"[ｒｌ]", "ｗ", data)
+    reply_text = re.sub(r"[RL]", "W", reply_text)
+    reply_text = re.sub(r"[ＲＬ]", "Ｗ", reply_text)
+    reply_text = re.sub(r"n([aeiouａｅｉｏｕ])", r"ny\1", reply_text)
+    reply_text = re.sub(r"ｎ([ａｅｉｏｕ])", r"ｎｙ\1", reply_text)
+    reply_text = re.sub(r"N([aeiouAEIOU])", r"Ny\1", reply_text)
+    reply_text = re.sub(r"Ｎ([ａｅｉｏｕＡＥＩＯＵ])", r"Ｎｙ\1", reply_text)
+    reply_text = re.sub(r"\!+", " " + random.choice(faces), reply_text)
+    reply_text = re.sub(r"！+", " " + random.choice(faces), reply_text)
     reply_text = reply_text.replace("ove", "uv")
     reply_text = reply_text.replace("ｏｖｅ", "ｕｖ")
-    reply_text += ' ' + random.choice(faces)
+    reply_text += " " + random.choice(faces)
 
     if noreply:
         message.reply_text(reply_text)
@@ -99,25 +114,24 @@ def deepfryer(update, context):
         image = Image.open(io.BytesIO(photodata))
     elif data2:
         sticker = context.bot.get_file(data2.file_id)
-        sticker.download('sticker.png')
+        sticker.download("sticker.png")
         image = Image.open("sticker.png")
 
     # the following needs to be executed async (because dumb lib)
     bot = context.bot
     loop = asyncio.new_event_loop()
     loop.run_until_complete(
-        process_deepfry(image, message.reply_to_message, bot, context))
+        process_deepfry(image, message.reply_to_message, bot, context)
+    )
     loop.close()
 
 
 async def process_deepfry(image: Image, reply: Message, bot: Bot, context):
-    image = await deepfry(img=image,
-                          token=DEEPFRY_TOKEN,
-                          url_base='westeurope')
+    image = await deepfry(img=image, token=DEEPFRY_TOKEN, url_base="westeurope")
 
     bio = BytesIO()
-    bio.name = 'image.jpeg'
-    image.save(bio, 'JPEG')
+    bio.name = "image.jpeg"
+    image.save(bio, "JPEG")
 
     # send it back
     bio.seek(0)
@@ -135,9 +149,8 @@ def stretch(update, context):
     else:
         count = random.randint(3, 10)
         reply_text = re.sub(
-            r'([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])',
-            (r'\1' * count),
-            message.reply_to_message.text)
+            r"([aeiouAEIOUａｅｉｏｕＡＥＩＯＵ])", (r"\1" * count), message.reply_to_message.text
+        )
         message.reply_to_message.reply_text(reply_text)
 
 
@@ -207,7 +220,8 @@ def copypasta(update, context):
             "👀",
             "👅",
             "😩",
-            "🚰"]
+            "🚰",
+        ]
         reply_text = random.choice(emojis)
         # choose a random character in the message to be substituted with 🅱️
         b_char = random.choice(message.reply_to_message.text).lower()
@@ -237,8 +251,9 @@ def bmoji(update, context):
     else:
         # choose a random character in the message to be substituted with 🅱️
         b_char = random.choice(message.reply_to_message.text).lower()
-        reply_text = message.reply_to_message.text.replace(
-            b_char, "🅱️").replace(b_char.upper(), "🅱️")
+        reply_text = message.reply_to_message.text.replace(b_char, "🅱️").replace(
+            b_char.upper(), "🅱️"
+        )
         message.reply_to_message.reply_text(reply_text)
 
 
@@ -249,10 +264,10 @@ def forbesify(update, context):
     if message.reply_to_message:
         data = message.reply_to_message.text
     else:
-        data = ''
+        data = ""
 
     data = data.lower()
-    accidentals = ['VB', 'VBD', 'VBG', 'VBN']
+    accidentals = ["VB", "VBD", "VBG", "VBN"]
     reply_text = data.split()
     offset = 0
 
@@ -264,10 +279,10 @@ def forbesify(update, context):
     for k in range(len(reply_text)):
         i = reply_text[k + offset]
         if tagged.get(i) in accidentals:
-            reply_text.insert(k + offset, 'accidentally')
+            reply_text.insert(k + offset, "accidentally")
             offset += 1
 
-    reply_text = string.capwords(' '.join(reply_text))
+    reply_text = string.capwords(" ".join(reply_text))
     message.reply_to_message.reply_text(reply_text)
 
 
@@ -278,7 +293,7 @@ def spongemocktext(update, context):
     if message.reply_to_message:
         data = message.reply_to_message.text
     else:
-        data = str('Haha yes, I know how to mock text.')
+        data = str("Haha yes, I know how to mock text.")
 
     reply_text = spongemock.mock(data)
     message.reply_text(reply_text)
@@ -338,14 +353,16 @@ def chinesememes(update, context):
         num = random.randint(0, int(maxnum))
     try:
         IMG = "https://raw.githubusercontent.com/atanet90/expression-pack/master/img/{}.jpg".format(
-            num)
+            num
+        )
         maxnum = int(maxnum)
         maxnum -= 1
-        context.bot.send_photo(chat_id=message.chat_id,
-                       photo=IMG,
-                       caption='Image: {} - (0-{})'.format(num,
-                                                           maxnum),
-                       reply_to_message_id=message.message_id)
+        context.bot.send_photo(
+            chat_id=message.chat_id,
+            photo=IMG,
+            caption="Image: {} - (0-{})".format(num, maxnum),
+            reply_to_message_id=message.message_id,
+        )
     except BadRequest as e:
         message.reply_text("Image not found!")
         print(e)
@@ -358,7 +375,7 @@ def shout(update, context):
     message = update.effective_message
     chat = update.effective_chat  # type: Optional[Chat]
     args = context.args
- 
+
     noreply = False
     if message.reply_to_message:
         data = message.reply_to_message.text
@@ -368,12 +385,12 @@ def shout(update, context):
     else:
         noreply = True
         data = tl(chat.id, "I need a message to meme.")
- 
+
     msg = "```"
     result = []
-    result.append(' '.join([s for s in data]))
+    result.append(" ".join([s for s in data]))
     for pos, symbol in enumerate(data[1:]):
-        result.append(symbol + ' ' + '  ' * pos + symbol)
+        result.append(symbol + " " + "  " * pos + symbol)
     result = list("\n".join(result))
     result[0] = data[0]
     result = "".join(result)
@@ -410,4 +427,3 @@ dispatcher.add_handler(FORBES_HANDLER)
 dispatcher.add_handler(CHINESEMEMES_HANDLER)
 dispatcher.add_handler(MOCK_HANDLER)
 dispatcher.add_handler(DEEPFRY_HANDLER)
-

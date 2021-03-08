@@ -24,20 +24,23 @@ def addsudo(update, context: List[str]):
         return ""
 
     if int(user_id) == OWNER_ID:
-        message.reply_text("The specified user is my owner! No need add him to SUDO_USERS list!")
+        message.reply_text(
+            "The specified user is my owner! No need add him to SUDO_USERS list!"
+        )
         return ""
 
     if int(user_id) in SUDO_USERS:
         message.reply_text("Buddy this user is already a sudo user.")
         return ""
 
-    with open("sudo_users.txt","a") as file:
+    with open("sudo_users.txt", "a") as file:
         file.write(str(user_id) + "\n")
 
     SUDO_USERS.append(user_id)
     message.reply_text("Succefully Added To SUDO List!")
 
     return ""
+
 
 @bot_admin
 @run_async
@@ -51,16 +54,18 @@ def rsudo(update, context: List[str]):
         return ""
 
     if int(user_id) == OWNER_ID:
-        message.reply_text("The specified user is my owner! I won't remove him from SUDO_USERS list!")
+        message.reply_text(
+            "The specified user is my owner! I won't remove him from SUDO_USERS list!"
+        )
         return ""
 
     if user_id not in SUDO_USERS:
         message.reply_text("{} is not a sudo user".format(user_id))
         return ""
 
-    users = [line.rstrip('\n') for line in open("sudo_users.txt")]
+    users = [line.rstrip("\n") for line in open("sudo_users.txt")]
 
-    with open("sudo_users.txt","w") as file:
+    with open("sudo_users.txt", "w") as file:
         for user in users:
             if not int(user) == user_id:
                 file.write(str(user) + "\n")
@@ -79,8 +84,12 @@ __help__ = """
 
 __mod_name__ = "Sudo"
 
-addsudo_HANDLER = CommandHandler("addsudo", addsudo, pass_args=True, filters=Filters.user(OWNER_ID))
-rsudo_HANDLER = CommandHandler("rsudo", rsudo, pass_args=True, filters=Filters.user(OWNER_ID))
+addsudo_HANDLER = CommandHandler(
+    "addsudo", addsudo, pass_args=True, filters=Filters.user(OWNER_ID)
+)
+rsudo_HANDLER = CommandHandler(
+    "rsudo", rsudo, pass_args=True, filters=Filters.user(OWNER_ID)
+)
 
 dispatcher.add_handler(addsudo_HANDLER)
 dispatcher.add_handler(rsudo_HANDLER)

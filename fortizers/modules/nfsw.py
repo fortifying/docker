@@ -16,16 +16,19 @@ from fortizers import dispatcher
 from fortizers.__main__ import STATS, USER_INFO
 from fortizers.modules.disable import DisableAbleCommandHandler
 
+
 def butts(update, context):
-    nsfw = requests.get('http://api.obutts.ru/noise/1').json()[0]["preview"]
+    nsfw = requests.get("http://api.obutts.ru/noise/1").json()[0]["preview"]
     final = "http://media.obutts.ru/{}".format(nsfw)
     update.message.reply_photo(final)
 
+
 def boobs(update, context):
-    nsfw = requests.get('http://api.oboobs.ru/noise/1').json()[0]["preview"]
+    nsfw = requests.get("http://api.oboobs.ru/noise/1").json()[0]["preview"]
     final = "http://media.oboobs.ru/{}".format(nsfw)
     update.message.reply_photo(final)
-		
+
+
 __help__ = """
  - /boobs: Sends Random Boobs pic.
  - /butts: Sends Random Butts pic.

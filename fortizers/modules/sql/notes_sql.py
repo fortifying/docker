@@ -44,6 +44,7 @@ class Buttons(BASE):
         self.url = url
         self.same_line = same_line
 
+
 class PrivateNote(BASE):
     __tablename__ = "note_private"
 
@@ -58,6 +59,7 @@ class PrivateNote(BASE):
 
     def __repr__(self):
         return "note_private for {}".format(self.chat_id)
+
 
 Notes.__table__.create(checkfirst=True)
 Buttons.__table__.create(checkfirst=True)
@@ -76,12 +78,19 @@ def add_note_to_db(chat_id, note_name, note_data, msgtype, buttons=None, file=No
         prev = SESSION.query(Notes).get((str(chat_id), note_name))
         if prev:
             with BUTTONS_INSERTION_LOCK:
-                prev_buttons = SESSION.query(Buttons).filter(Buttons.chat_id == str(chat_id),
-                                                             Buttons.note_name == note_name).all()
+                prev_buttons = (
+                    SESSION.query(Buttons)
+                    .filter(
+                        Buttons.chat_id == str(chat_id), Buttons.note_name == note_name
+                    )
+                    .all()
+                )
                 for btn in prev_buttons:
                     SESSION.delete(btn)
             SESSION.delete(prev)
-        note = Notes(str(chat_id), note_name, note_data or "", msgtype=msgtype.value, file=file)
+        note = Notes(
+            str(chat_id), note_name, note_data or "", msgtype=msgtype.value, file=file
+        )
         SESSION.add(note)
         SESSION.commit()
 
@@ -101,8 +110,13 @@ def rm_note(chat_id, note_name):
         note = SESSION.query(Notes).get((str(chat_id), note_name))
         if note:
             with BUTTONS_INSERTION_LOCK:
-                buttons = SESSION.query(Buttons).filter(Buttons.chat_id == str(chat_id),
-                                                        Buttons.note_name == note_name).all()
+                buttons = (
+                    SESSION.query(Buttons)
+                    .filter(
+                        Buttons.chat_id == str(chat_id), Buttons.note_name == note_name
+                    )
+                    .all()
+                )
                 for btn in buttons:
                     SESSION.delete(btn)
 
@@ -117,7 +131,12 @@ def rm_note(chat_id, note_name):
 
 def get_all_chat_notes(chat_id):
     try:
-        return SESSION.query(Notes).filter(Notes.chat_id == str(chat_id)).order_by(Notes.name.asc()).all()
+        return (
+            SESSION.query(Notes)
+            .filter(Notes.chat_id == str(chat_id))
+            .order_by(Notes.name.asc())
+            .all()
+        )
     finally:
         SESSION.close()
 
@@ -131,21 +150,27 @@ def add_note_button_to_db(chat_id, note_name, b_name, url, same_line):
 
 def get_buttons(chat_id, note_name):
     try:
-        return SESSION.query(Buttons).filter(Buttons.chat_id == str(chat_id), Buttons.note_name == note_name).order_by(
-            Buttons.id).all()
+        return (
+            SESSION.query(Buttons)
+            .filter(Buttons.chat_id == str(chat_id), Buttons.note_name == note_name)
+            .order_by(Buttons.id)
+            .all()
+        )
     finally:
         SESSION.close()
+
 
 def private_note(chat_id, is_private, is_delete):
     with PMNOTE_INSERTION_LOCK:
         curr = SESSION.query(PrivateNote).get(str(chat_id))
         if curr:
             SESSION.delete(curr)
-        
+
         curr = PrivateNote(str(chat_id), is_private, is_delete)
 
         SESSION.add(curr)
         SESSION.commit()
+
 
 def get_private_note(chat_id):
     curr = SESSION.query(PrivateNote).get(str(chat_id))
@@ -153,6 +178,7 @@ def get_private_note(chat_id):
         return curr.is_private, curr.is_delete
     else:
         return False, False
+
 
 def num_notes():
     try:
@@ -170,12 +196,16 @@ def num_chats():
 
 def migrate_chat(old_chat_id, new_chat_id):
     with NOTES_INSERTION_LOCK:
-        chat_notes = SESSION.query(Notes).filter(Notes.chat_id == str(old_chat_id)).all()
+        chat_notes = (
+            SESSION.query(Notes).filter(Notes.chat_id == str(old_chat_id)).all()
+        )
         for note in chat_notes:
             note.chat_id = str(new_chat_id)
 
         with BUTTONS_INSERTION_LOCK:
-            chat_buttons = SESSION.query(Buttons).filter(Buttons.chat_id == str(old_chat_id)).all()
+            chat_buttons = (
+                SESSION.query(Buttons).filter(Buttons.chat_id == str(old_chat_id)).all()
+            )
             for btn in chat_buttons:
                 btn.chat_id = str(new_chat_id)
 

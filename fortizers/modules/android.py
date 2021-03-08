@@ -23,11 +23,13 @@ from fortizers.modules.languages import tl
 # Command /magisk /twrp and /device were obtained thanks to corsicanu bot (originally kanged from UserBot PaperplaneExtended)
 # Command /specs was only possible thanks to the help of AvinashReddy3108
 
-LOGGER.info("Original Android Modules by @RealAkito on Telegram, modified by @HitaloSama on GitHub")
+LOGGER.info(
+    "Original Android Modules by @RealAkito on Telegram, modified by @HitaloSama on GitHub"
+)
 
-WIKI = 'https://xiaomiwiki.github.io/wiki'
-GITHUB = 'https://github.com'
-DEVICES_DATA = 'https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json'
+WIKI = "https://xiaomiwiki.github.io/wiki"
+GITHUB = "https://github.com"
+DEVICES_DATA = "https://raw.githubusercontent.com/androidtrackers/certified-android-devices/master/by_device.json"
 
 
 @spamcheck
@@ -35,29 +37,38 @@ DEVICES_DATA = 'https://raw.githubusercontent.com/androidtrackers/certified-andr
 def device(update, context):
     args = context.args
     if len(args) == 0:
-        reply = 'No codename provided, write a codename for fetching informations.'
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        reply = "No codename provided, write a codename for fetching informations."
+        update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
     device = " ".join(args)
     db = get(DEVICES_DATA).json()
-    newdevice = device.strip('lte') if device.startswith('beyond') else device
+    newdevice = device.strip("lte") if device.startswith("beyond") else device
     try:
-        reply = f'Search results for {device}:\n\n'
-        brand = db[newdevice][0]['brand']
-        name = db[newdevice][0]['name']
-        model = db[newdevice][0]['model']
+        reply = f"Search results for {device}:\n\n"
+        brand = db[newdevice][0]["brand"]
+        name = db[newdevice][0]["name"]
+        model = db[newdevice][0]["model"]
         codename = newdevice
-        reply += f'<b>{brand} {name}</b>\n' \
-                 f'Model: <code>{model}</code>\n' \
-                 f'Codename: <code>{codename}</code>\n\n'
+        reply += (
+            f"<b>{brand} {name}</b>\n"
+            f"Model: <code>{model}</code>\n"
+            f"Codename: <code>{codename}</code>\n\n"
+        )
     except KeyError:
         reply = f"Couldn't find info about {device}!\n"
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
-    update.message.reply_text("{}".format(reply),
-                              parse_mode=ParseMode.HTML, disable_web_page_preview=True)
+    update.message.reply_text(
+        "{}".format(reply), parse_mode=ParseMode.HTML, disable_web_page_preview=True
+    )
 
 
 @spamcheck
@@ -65,13 +76,24 @@ def device(update, context):
 def odin(update, context):
     message = "*Tool to flash the stock firmware of your Samsung Galaxy*\nDownload from below!\n\nYou can download a firmware by the `/getfw` command or on the @SamFirm channel"
     keyboard = [
-        [InlineKeyboardButton("Odin", url="https://odin3download.com/tool/Odin3-v3.14.1.zip"),
-         InlineKeyboardButton("USB Drivers", url="https://developer.samsung.com/mobile/android-usb-driver.html")]
+        [
+            InlineKeyboardButton(
+                "Odin", url="https://odin3download.com/tool/Odin3-v3.14.1.zip"
+            ),
+            InlineKeyboardButton(
+                "USB Drivers",
+                url="https://developer.samsung.com/mobile/android-usb-driver.html",
+            ),
+        ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.effective_message.bot.send_message(chat_id=update.message.chat_id, text=message,
-                                              reply_to_message_id=update.message.message_id,
-                                              reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+    update.effective_message.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=message,
+        reply_to_message_id=update.message.message_id,
+        reply_markup=reply_markup,
+        parse_mode=ParseMode.MARKDOWN,
+    )
 
 
 @spamcheck
@@ -79,57 +101,101 @@ def odin(update, context):
 def gsis(update, context):
     message = "*Channels recommended by my creator for you to download GSIs:*\n\n - @VegaGSIs\n - [@Expressluke](http://t.me/joinchat/AAAAAEjIRhZRX1mOZpLR5g)\n - @ErfanGSI\n - @canalvegadata"
     keyboard = [
-        [InlineKeyboardButton("What is GSI?", url="https://github.com/phhusson/treble_experimentations/wiki/Home"),
-         InlineKeyboardButton("PHH's GSI", url="https://github.com/phhusson/treble_experimentations")]
+        [
+            InlineKeyboardButton(
+                "What is GSI?",
+                url="https://github.com/phhusson/treble_experimentations/wiki/Home",
+            ),
+            InlineKeyboardButton(
+                "PHH's GSI", url="https://github.com/phhusson/treble_experimentations"
+            ),
+        ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.effective_message.bot.send_message(chat_id=update.message.chat_id, text=message,
-                                              reply_to_message_id=update.message.message_id,
-                                              reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN,
-                                              disable_web_page_preview=True)
+    update.effective_message.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=message,
+        reply_to_message_id=update.message.message_id,
+        reply_markup=reply_markup,
+        parse_mode=ParseMode.MARKDOWN,
+        disable_web_page_preview=True,
+    )
 
 
 @spamcheck
 @run_async
 def edxposed(update, context):
     message = update.effective_message
-    usr = get('https://api.github.com/repos/elderdrivers/edxposed/releases/latest').json()
+    usr = get(
+        "https://api.github.com/repos/elderdrivers/edxposed/releases/latest"
+    ).json()
     reply_text = "*Latest EdXposed release(s):*\n"
     for i in range(len(usr)):
         try:
-            name = usr['assets'][i]['name']
-            url = usr['assets'][i]['browser_download_url']
+            name = usr["assets"][i]["name"]
+            url = usr["assets"][i]["browser_download_url"]
             reply_text += f"[{name}]({url})\n\n"
-            keyboard = [[InlineKeyboardButton(text="Repository", url="https://github.com/ElderDrivers/EdXposed")]]
+            keyboard = [
+                [
+                    InlineKeyboardButton(
+                        text="Repository",
+                        url="https://github.com/ElderDrivers/EdXposed",
+                    )
+                ]
+            ]
             keyboard += [
-                [InlineKeyboardButton(text="EdXposed Manager", url="https://github.com/ElderDrivers/EdXposedManager")]]
+                [
+                    InlineKeyboardButton(
+                        text="EdXposed Manager",
+                        url="https://github.com/ElderDrivers/EdXposedManager",
+                    )
+                ]
+            ]
         except IndexError:
             continue
-    message.reply_text(reply_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN)
+    message.reply_text(
+        reply_text,
+        reply_markup=InlineKeyboardMarkup(keyboard),
+        parse_mode=ParseMode.MARKDOWN,
+    )
 
 
 @spamcheck
 @run_async
 def mitools(update, context):
-    url = f'{WIKI}/Tools_for_Xiaomi_devices.html'
+    url = f"{WIKI}/Tools_for_Xiaomi_devices.html"
     message = "Useful tools for Xiaomi devices"
     keyboard = [
-        [InlineKeyboardButton("MiFlash", f'{url}#miflash-by-xiaomi'),
-         InlineKeyboardButton("MiFlash Pro", f'{url}#miflash-pro-by-xiaomi'),
-         InlineKeyboardButton("MiUnlock", f'{url}#miunlock-by-xiaomi')],
-        [InlineKeyboardButton("XiaomiTool", f'{url}#xiaomitool-v2-by-francesco-tescari'),
-         InlineKeyboardButton("XiaomiADB", f'{url}#xiaomiadb-by-francesco-tescari'),
-         InlineKeyboardButton("Unofficial MiUnlock",
-                              f'{url}#miunlocktool-by-francesco-tescari')],
-        [InlineKeyboardButton("Xiaomi ADB/Fastboot Tools",
-                              f'{url}#xiaomi-adbfastboot-tools-by-szaki'),
-         InlineKeyboardButton("More Tools...", f'{url}')]
+        [
+            InlineKeyboardButton("MiFlash", f"{url}#miflash-by-xiaomi"),
+            InlineKeyboardButton("MiFlash Pro", f"{url}#miflash-pro-by-xiaomi"),
+            InlineKeyboardButton("MiUnlock", f"{url}#miunlock-by-xiaomi"),
+        ],
+        [
+            InlineKeyboardButton(
+                "XiaomiTool", f"{url}#xiaomitool-v2-by-francesco-tescari"
+            ),
+            InlineKeyboardButton("XiaomiADB", f"{url}#xiaomiadb-by-francesco-tescari"),
+            InlineKeyboardButton(
+                "Unofficial MiUnlock", f"{url}#miunlocktool-by-francesco-tescari"
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                "Xiaomi ADB/Fastboot Tools", f"{url}#xiaomi-adbfastboot-tools-by-szaki"
+            ),
+            InlineKeyboardButton("More Tools...", f"{url}"),
+        ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.effective_message.bot.send_message(chat_id=update.message.chat_id, text=message,
-                                              reply_to_message_id=update.message.message_id,
-                                              reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN,
-                                              disable_web_page_preview=True)
+    update.effective_message.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=message,
+        reply_to_message_id=update.message.message_id,
+        reply_markup=reply_markup,
+        parse_mode=ParseMode.MARKDOWN,
+        disable_web_page_preview=True,
+    )
 
 
 @spamcheck
@@ -137,43 +203,48 @@ def mitools(update, context):
 def getfw(update, context):
     args = context.args
     if not len(args) == 2:
-        reply = 'Give me something to fetch, like: <code>/getfw SM-N975F DBT</code>'
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.HTML)
+        reply = "Give me something to fetch, like: <code>/getfw SM-N975F DBT</code>"
+        update.effective_message.reply_text(
+            "{}".format(reply), parse_mode=ParseMode.HTML
+        )
         return
     temp, csc = args
-    model = 'sm-' + temp if not temp.upper().startswith('SM-') else temp
-    test = get(f'https://samfrew.com/model/{model.upper()}/region/{csc.upper()}/')
+    model = "sm-" + temp if not temp.upper().startswith("SM-") else temp
+    test = get(f"https://samfrew.com/model/{model.upper()}/region/{csc.upper()}/")
     if test.status_code == 404:
         reply = f"Couldn't find any firmware downloads for <code>{model.upper()} {csc.upper()}</code>, make sure you gave me the right CSC and model!"
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.HTML)
+        update.effective_message.reply_text(
+            "{}".format(reply), parse_mode=ParseMode.HTML
+        )
         return
-    url1 = f'https://samfrew.com/model/{model.upper()}/region/{csc.upper()}/'
-    url2 = f'https://www.sammobile.com/samsung/firmware/{model.upper()}/{csc.upper()}/'
-    url3 = f'https://sfirmware.com/samsung-{model.lower()}/#tab=firmwares'
-    url4 = f'https://samfw.com/firmware/{model.upper()}/{csc.upper()}/'
-    fota = get(f'http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml')
-    page = BeautifulSoup(fota.content, 'lxml')
+    url1 = f"https://samfrew.com/model/{model.upper()}/region/{csc.upper()}/"
+    url2 = f"https://www.sammobile.com/samsung/firmware/{model.upper()}/{csc.upper()}/"
+    url3 = f"https://sfirmware.com/samsung-{model.lower()}/#tab=firmwares"
+    url4 = f"https://samfw.com/firmware/{model.upper()}/{csc.upper()}/"
+    fota = get(
+        f"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml"
+    )
+    page = BeautifulSoup(fota.content, "lxml")
     os = page.find("latest").get("o")
     reply = ""
     if page.find("latest").text.strip():
-        pda, csc2, phone = page.find("latest").text.strip().split('/')
-        reply += f'*Latest firmware for {model.upper()} {csc.upper()}:*\n'
-        reply += f' • PDA: `{pda}`\n • CSC: `{csc2}`\n'
+        pda, csc2, phone = page.find("latest").text.strip().split("/")
+        reply += f"*Latest firmware for {model.upper()} {csc.upper()}:*\n"
+        reply += f" • PDA: `{pda}`\n • CSC: `{csc2}`\n"
         if phone:
-            reply += f' • Phone: `{phone}`\n'
+            reply += f" • Phone: `{phone}`\n"
         if os:
-            reply += f' • Android: `{os}`\n'
-    reply += '\n'
-    reply += f'*Downloads for {model.upper()} {csc.upper()}:*\n'
-    reply += f' • [samfrew.com]({url1})\n'
-    reply += f' • [sammobile.com]({url2})\n'
-    reply += f' • [sfirmware.com]({url3})\n'
-    reply += f' • [samfw.com]({url4}) ⭐\n\n'
-    reply += 'You can also receive real-time firmwares from SamFrew on the @SamFirm channel\n'
-    update.message.reply_text("{}".format(reply),
-                              parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+            reply += f" • Android: `{os}`\n"
+    reply += "\n"
+    reply += f"*Downloads for {model.upper()} {csc.upper()}:*\n"
+    reply += f" • [samfrew.com]({url1})\n"
+    reply += f" • [sammobile.com]({url2})\n"
+    reply += f" • [sfirmware.com]({url3})\n"
+    reply += f" • [samfw.com]({url4}) ⭐\n\n"
+    reply += "You can also receive real-time firmwares from SamFrew on the @SamFirm channel\n"
+    update.message.reply_text(
+        "{}".format(reply), parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
@@ -181,68 +252,87 @@ def getfw(update, context):
 def checkfw(update, context):
     args = context.args
     if not len(args) == 2:
-        reply = 'Give me something to fetch, like:\n`/checkfw SM-N975F DBT`'
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        reply = "Give me something to fetch, like:\n`/checkfw SM-N975F DBT`"
+        update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
     temp, csc = args
-    model = 'sm-' + temp if not temp.upper().startswith('SM-') else temp
-    fota = get(f'http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml')
-    test = get(f'http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.test.xml')
+    model = "sm-" + temp if not temp.upper().startswith("SM-") else temp
+    fota = get(
+        f"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.xml"
+    )
+    test = get(
+        f"http://fota-cloud-dn.ospserver.net/firmware/{csc.upper()}/{model.upper()}/version.test.xml"
+    )
     if test.status_code != 200:
         reply = f"Couldn't check for {temp.upper()} {csc.upper()}, make sure you gave me the right CSC and model!"
-        update.effective_message.reply_text("{}".format(reply),
-                                            parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
-    page1 = BeautifulSoup(fota.content, 'lxml')
-    page2 = BeautifulSoup(test.content, 'lxml')
+    page1 = BeautifulSoup(fota.content, "lxml")
+    page2 = BeautifulSoup(test.content, "lxml")
     os1 = page1.find("latest").get("o")
     os2 = page2.find("latest").get("o")
     if page1.find("latest").text.strip():
-        pda1, csc1, phone1 = page1.find("latest").text.strip().split('/')
-        reply = f'*Latest released firmware for {model.upper()} {csc.upper()}:*\n'
-        reply += f' • PDA: `{pda1}`\n • CSC: `{csc1}`\n'
+        pda1, csc1, phone1 = page1.find("latest").text.strip().split("/")
+        reply = f"*Latest released firmware for {model.upper()} {csc.upper()}:*\n"
+        reply += f" • PDA: `{pda1}`\n • CSC: `{csc1}`\n"
         if phone1:
-            reply += f' • Phone: `{phone1}`\n'
+            reply += f" • Phone: `{phone1}`\n"
         if os1:
-            reply += f' • Android: `{os1}`\n'
-        reply += '\n'
+            reply += f" • Android: `{os1}`\n"
+        reply += "\n"
     else:
-        reply = f'*No public release found for {model.upper()} {csc.upper()}.*\n\n'
-    reply += f'*Latest test firmware for {model.upper()} {csc.upper()}:*\n'
-    if len(page2.find("latest").text.strip().split('/')) == 3:
-        pda2, csc2, phone2 = page2.find("latest").text.strip().split('/')
-        reply += f' • PDA: `{pda2}`\n • CSC: `{csc2}`\n'
+        reply = f"*No public release found for {model.upper()} {csc.upper()}.*\n\n"
+    reply += f"*Latest test firmware for {model.upper()} {csc.upper()}:*\n"
+    if len(page2.find("latest").text.strip().split("/")) == 3:
+        pda2, csc2, phone2 = page2.find("latest").text.strip().split("/")
+        reply += f" • PDA: `{pda2}`\n • CSC: `{csc2}`\n"
         if phone2:
-            reply += f' • Phone: `{phone2}`\n'
+            reply += f" • Phone: `{phone2}`\n"
         if os2:
-            reply += f' • Android: `{os2}`\n'
-        reply += '\n'
+            reply += f" • Android: `{os2}`\n"
+        reply += "\n"
     else:
         md5 = page2.find("latest").text.strip()
-        reply += f' • Hash: `{md5}`\n • Android: `{os2}`\n\n'
+        reply += f" • Hash: `{md5}`\n • Android: `{os2}`\n\n"
 
-    update.message.reply_text("{}".format(reply),
-                              parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    update.message.reply_text(
+        "{}".format(reply), parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
 @run_async
 def magisk(update, context):
-    url = 'https://raw.githubusercontent.com/topjohnwu/magisk_files/'
+    url = "https://raw.githubusercontent.com/topjohnwu/magisk_files/"
     releases = ""
-    for type, branch in {"Stable": ["master/stable", "master"], "Beta": ["master/beta", "master"],
-                         "Canary (debug)": ["canary/debug", "canary"]}.items():
-        fetch = get(url + branch[0] + '.json')
+    for type, branch in {
+        "Stable": ["master/stable", "master"],
+        "Beta": ["master/beta", "master"],
+        "Canary (debug)": ["canary/debug", "canary"],
+    }.items():
+        fetch = get(url + branch[0] + ".json")
         data = json.loads(fetch.content)
-        releases += f'*{type}*: \n' \
-                    f'• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n' \
-                    f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n' \
-                    f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n' \
-                    f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n'
+        releases += (
+            f"*{type}*: \n"
+            f"• [Changelog](https://github.com/topjohnwu/magisk_files/blob/{branch[1]}/notes.md)\n"
+            f'• Zip - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["magisk"]["link"]}) \n'
+            f'• App - [{data["app"]["version"]}-{data["app"]["versionCode"]}]({data["app"]["link"]}) \n'
+            f'• Uninstaller - [{data["magisk"]["version"]}-{data["magisk"]["versionCode"]}]({data["uninstaller"]["link"]})\n\n'
+        )
 
-    update.message.reply_text("*Latest Magisk Releases:*\n{}".format(releases),
-                              parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    update.message.reply_text(
+        "*Latest Magisk Releases:*\n{}".format(releases),
+        parse_mode=ParseMode.MARKDOWN,
+        disable_web_page_preview=True,
+    )
 
 
 @spamcheck
@@ -250,54 +340,67 @@ def magisk(update, context):
 def twrp(update, context):
     args = context.args
     if len(args) == 0:
-        reply = 'No codename provided, write a codename for fetching informations.'
-        del_msg = update.effective_message.reply_text("{}".format(reply),
-                                                      parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        reply = "No codename provided, write a codename for fetching informations."
+        del_msg = update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         time.sleep(5)
         try:
             del_msg.delete()
             update.effective_message.delete()
         except BadRequest as err:
-            if (err.message == "Message to delete not found") or (err.message == "Message can't be deleted"):
+            if (err.message == "Message to delete not found") or (
+                err.message == "Message can't be deleted"
+            ):
                 return
 
     device = " ".join(args)
-    url = get(f'https://eu.dl.twrp.me/{device}/')
+    url = get(f"https://eu.dl.twrp.me/{device}/")
     if url.status_code == 404:
         reply = f"Couldn't find twrp downloads for {device}!\n"
-        del_msg = update.effective_message.reply_text("{}".format(reply),
-                                                      parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        del_msg = update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         time.sleep(5)
         try:
             del_msg.delete()
             update.effective_message.delete()
         except BadRequest as err:
-            if (err.message == "Message to delete not found") or (err.message == "Message can't be deleted"):
+            if (err.message == "Message to delete not found") or (
+                err.message == "Message can't be deleted"
+            ):
                 return
     else:
-        reply = f'*Latest Official TWRP for {device}*\n'
+        reply = f"*Latest Official TWRP for {device}*\n"
         db = get(DEVICES_DATA).json()
-        newdevice = device.strip('lte') if device.startswith('beyond') else device
+        newdevice = device.strip("lte") if device.startswith("beyond") else device
         try:
-            brand = db[newdevice][0]['brand']
-            name = db[newdevice][0]['name']
-            reply += f'*{brand} - {name}*\n'
+            brand = db[newdevice][0]["brand"]
+            name = db[newdevice][0]["name"]
+            reply += f"*{brand} - {name}*\n"
         except KeyError:
             pass
-        page = BeautifulSoup(url.content, 'lxml')
+        page = BeautifulSoup(url.content, "lxml")
         date = page.find("em").text.strip()
-        reply += f'*Updated:* {date}\n'
-        trs = page.find('table').find_all('tr')
-        row = 2 if trs[0].find('a').text.endswith('tar') else 1
+        reply += f"*Updated:* {date}\n"
+        trs = page.find("table").find_all("tr")
+        row = 2 if trs[0].find("a").text.endswith("tar") else 1
         for i in range(row):
-            download = trs[i].find('a')
+            download = trs[i].find("a")
             dl_link = f"https://eu.dl.twrp.me{download['href']}"
             dl_file = download.text
             size = trs[i].find("span", {"class": "filesize"}).text
-            reply += f'[{dl_file}]({dl_link}) - {size}\n'
+            reply += f"[{dl_file}]({dl_link}) - {size}\n"
 
-        update.message.reply_text("{}".format(reply),
-                                  parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        update.message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
 
 
 @spamcheck
@@ -309,59 +412,85 @@ def aex(update, context):
 
     if len(args) != 2:
         reply_text = "Please type your device **codename** and **Android Version**!\nFor example, `/aex jason pie`"
-        message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
     device = args[0]
     version = args[1]
-    res = get(AEX_OTA_API + device + '/' + version.lower())
+    res = get(AEX_OTA_API + device + "/" + version.lower())
     if res.status_code == 200:
         apidata = json.loads(res.text)
-        if apidata.get('error'):
-            message.reply_text("Sorry, but there isn't any build available for " + device)
+        if apidata.get("error"):
+            message.reply_text(
+                "Sorry, but there isn't any build available for " + device
+            )
             return
         else:
-            developer = apidata.get('developer')
-            developer_url = apidata.get('developer_url')
-            forum_url = apidata.get('forum_url')
-            filename = apidata.get('filename')
-            url = "https://downloads.aospextended.com/download/" + device + "/" + version + "/" + apidata.get(
-                'filename')
-            builddate = datetime.strptime(apidata.get('build_date'), "%Y%m%d-%H%M").strftime("%d %B %Y")
-            buildsize = sizee(int(apidata.get('filesize')))
+            developer = apidata.get("developer")
+            developer_url = apidata.get("developer_url")
+            forum_url = apidata.get("forum_url")
+            filename = apidata.get("filename")
+            url = (
+                "https://downloads.aospextended.com/download/"
+                + device
+                + "/"
+                + version
+                + "/"
+                + apidata.get("filename")
+            )
+            builddate = datetime.strptime(
+                apidata.get("build_date"), "%Y%m%d-%H%M"
+            ).strftime("%d %B %Y")
+            buildsize = sizee(int(apidata.get("filesize")))
 
-            message = (f"*Download:* [{filename}]({url})\n"
-                       f"*Build date:* `{builddate}`\n"
-                       f"*Build size:* `{buildsize}`\n"
-                       f"*XDA Thread:* [Here]({forum_url})\n"
-                       f"*By:* [{developer}]({developer_url})\n")
+            message = (
+                f"*Download:* [{filename}]({url})\n"
+                f"*Build date:* `{builddate}`\n"
+                f"*Build size:* `{buildsize}`\n"
+                f"*XDA Thread:* [Here]({forum_url})\n"
+                f"*By:* [{developer}]({developer_url})\n"
+            )
 
-            keyboard = [[InlineKeyboardButton(text="Click here to download", url=f"{url}")]]
-            update.effective_message.reply_text(message, reply_markup=InlineKeyboardMarkup(keyboard),
-                                                parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+            keyboard = [
+                [InlineKeyboardButton(text="Click here to download", url=f"{url}")]
+            ]
+            update.effective_message.reply_text(
+                message,
+                reply_markup=InlineKeyboardMarkup(keyboard),
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
             return
     else:
         reply_text = "No builds found for the provided device and version combo.\n\n*Versions:* `pie`, `pie_gapps`, `q`, `q_gapps`"
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
 @run_async
 def bootleggers(update, context):
     message = update.effective_message
-    codename = message.text[len('/bootleggers '):]
+    codename = message.text[len("/bootleggers ") :]
 
-    if codename == '':
-        reply_text = "Please type your device **codename**!\nFor example, `/bootleggers tissot`"
-        message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    if codename == "":
+        reply_text = (
+            "Please type your device **codename**!\nFor example, `/bootleggers tissot`"
+        )
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
-    fetch = get('https://bootleggersrom-devices.github.io/api/devices.json')
+    fetch = get("https://bootleggersrom-devices.github.io/api/devices.json")
     if fetch.status_code == 200:
         nestedjson = json.loads(fetch.content)
 
-        if codename.lower() == 'x00t':
-            devicetoget = 'X00T'
+        if codename.lower() == "x00t":
+            devicetoget = "X00T"
         else:
             devicetoget = codename.lower()
 
@@ -373,19 +502,24 @@ def bootleggers(update, context):
 
         if devicetoget in devices:
             for oh, baby in devices[devicetoget].items():
-                dontneedlist = ['id', 'filename', 'download', 'xdathread']
-                peaksmod = {'fullname': 'Device name', 'buildate': 'Build date', 'buildsize': 'Build size',
-                            'downloadfolder': 'SourceForge folder', 'mirrorlink': 'Mirror link',
-                            'xdathread': 'XDA thread'}
+                dontneedlist = ["id", "filename", "download", "xdathread"]
+                peaksmod = {
+                    "fullname": "Device name",
+                    "buildate": "Build date",
+                    "buildsize": "Build size",
+                    "downloadfolder": "SourceForge folder",
+                    "mirrorlink": "Mirror link",
+                    "xdathread": "XDA thread",
+                }
                 if baby and oh not in dontneedlist:
                     if oh in peaksmod:
                         oh = peaksmod[oh]
                     else:
                         oh = oh.title()
 
-                    if oh == 'SourceForge folder':
+                    if oh == "SourceForge folder":
                         reply_text += f"\n*{oh}:* [Here]({baby})"
-                    elif oh == 'Mirror link':
+                    elif oh == "Mirror link":
                         reply_text += f"\n*{oh}:* [Here]({baby})"
                     else:
                         reply_text += f"\n*{oh}:* `{baby}`"
@@ -394,11 +528,13 @@ def bootleggers(update, context):
             reply_text += f"\n*Download:* [{devices[devicetoget]['filename']}]({devices[devicetoget]['download']})"
             reply_text = reply_text.strip("\n")
         else:
-            reply_text = 'Device not found.'
+            reply_text = "Device not found."
 
     elif fetch.status_code == 404:
         reply_text = "Couldn't reach Bootleggers API."
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
@@ -407,13 +543,13 @@ def evo(update, context):
     cmd_name = "evo"
     message = update.effective_message
     chat = update.effective_chat
-    device = message.text[len(f'/{cmd_name} '):]
+    device = message.text[len(f"/{cmd_name} ") :]
 
     if device == "example":
         reply_text = tl(chat.id, "Why are you trying to get the example device?")
-        message.reply_text(reply_text,
-                           parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
     if device == "x00t":
@@ -422,15 +558,17 @@ def evo(update, context):
     if device == "x01bd":
         device = "X01BD"
 
-    if device == '':
-        reply_text = tl(chat.id, "Please type your device **codename**!\nFor example, `/{} tissot`").format(cmd_name)
-        message.reply_text(reply_text,
-                           parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+    if device == "":
+        reply_text = tl(
+            chat.id, "Please type your device **codename**!\nFor example, `/{} tissot`"
+        ).format(cmd_name)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
     fetch = get(
-        f'https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/builds/{device}.json'
+        f"https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/builds/{device}.json"
     )
 
     if fetch.status_code in [500, 504, 505]:
@@ -442,10 +580,10 @@ def evo(update, context):
     if fetch.status_code == 200:
         try:
             usr = json.loads(fetch.content)
-            filename = usr['filename']
-            url = usr['url']
-            version = usr['version']
-            size_a = usr['size']
+            filename = usr["filename"]
+            url = usr["url"]
+            version = usr["version"]
+            size_a = usr["size"]
             size_b = sizee(int(size_a))
 
             reply_text = tl(chat.id, "*Download:* [{}]({})\n").format(filename, url)
@@ -453,25 +591,37 @@ def evo(update, context):
             reply_text += tl(chat.id, "*Android Version:* `{}`\n").format(version)
 
             keyboard = [[InlineKeyboardButton(text="⬇️ Download ⬇️", url=f"{url}")]]
-            keyboard += [[InlineKeyboardButton(text="📃 Changelog 📃",
-                                               url=f"https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/changelogs/{device}/{filename}.txt")]]
-            message.reply_text(reply_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN,
-                               disable_web_page_preview=True)
+            keyboard += [
+                [
+                    InlineKeyboardButton(
+                        text="📃 Changelog 📃",
+                        url=f"https://raw.githubusercontent.com/Evolution-X-Devices/official_devices/master/changelogs/{device}/{filename}.txt",
+                    )
+                ]
+            ]
+            message.reply_text(
+                reply_text,
+                reply_markup=InlineKeyboardMarkup(keyboard),
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
             return
 
         except ValueError:
-            reply_text = tl(chat.id,
-                            "Tell the rom maintainer to fix their OTA json. I'm sure this won't work with OTA and it won't work with this bot too :P")
-            message.reply_text(reply_text,
-                               parse_mode=ParseMode.MARKDOWN,
-                               disable_web_page_preview=True)
+            reply_text = tl(
+                chat.id,
+                "Tell the rom maintainer to fix their OTA json. I'm sure this won't work with OTA and it won't work with this bot too :P",
+            )
+            message.reply_text(
+                reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+            )
             return
 
     elif fetch.status_code == 404:
         reply_text = tl(chat.id, "Couldn't find any results matching your query.")
-        message.reply_text(reply_text,
-                           parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
 
@@ -479,35 +629,45 @@ def evo(update, context):
 @run_async
 def los(update, context):
     message = update.effective_message
-    device = message.text[len('/los '):]
+    device = message.text[len("/los ") :]
 
-    if device == '':
+    if device == "":
         reply_text = "Please type your device **codename**!\nFor example, `/los tissot`"
-        message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
-    fetch = get(f'https://download.lineageos.org/api/v1/{device}/nightly/*')
-    if fetch.status_code == 200 and len(fetch.json()['response']) != 0:
+    fetch = get(f"https://download.lineageos.org/api/v1/{device}/nightly/*")
+    if fetch.status_code == 200 and len(fetch.json()["response"]) != 0:
         usr = json.loads(fetch.content)
-        response = usr['response'][0]
-        filename = response['filename']
-        url = response['url']
-        buildsize_a = response['size']
+        response = usr["response"][0]
+        filename = response["filename"]
+        url = response["url"]
+        buildsize_a = response["size"]
         buildsize_b = sizee(int(buildsize_a))
-        version = response['version']
+        version = response["version"]
 
-        reply_text = (f"*Download:* [{filename}]({url})\n"
-                      f"*Build size:* `{buildsize_b}`\n"
-                      f"*Version:* `{version}`")
+        reply_text = (
+            f"*Download:* [{filename}]({url})\n"
+            f"*Build size:* `{buildsize_b}`\n"
+            f"*Version:* `{version}`"
+        )
 
         keyboard = [[InlineKeyboardButton(text="Click to Download", url=f"{url}")]]
-        message.reply_text(reply_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        message.reply_text(
+            reply_text,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
 
     else:
         reply_text = "Device not found"
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
@@ -515,34 +675,42 @@ def los(update, context):
 def miui(update, context):
     giturl = "https://raw.githubusercontent.com/XiaomiFirmwareUpdater/miui-updates-tracker/master/"
     message = update.effective_message
-    device = message.text[len('/miui '):]
+    device = message.text[len("/miui ") :]
 
-    if device == '':
+    if device == "":
         reply_text = "Please type your device <b>codename</b>!\nFor example, <code>/miui whyred</code>!"
-        message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
     result = "<b>Recovery ROMs:</b>\n\n"
     result += "<b>Stable:</b>\n"
-    stable_all = yaml.load(get(giturl + "stable_recovery/stable_recovery.yml").content, Loader=yaml.FullLoader)
-    data = [i for i in stable_all if device == i['codename']]
+    stable_all = yaml.load(
+        get(giturl + "stable_recovery/stable_recovery.yml").content,
+        Loader=yaml.FullLoader,
+    )
+    data = [i for i in stable_all if device == i["codename"]]
     if len(data) != 0:
         for i in data:
-            result += "<b>Device:</b> " + i['device'] + "\n"
+            result += "<b>Device:</b> " + i["device"] + "\n"
             result += f'<a href="{i["download"]}">{i["filename"]}</a>\n'
-            result += "<b>Size:</b> " + i['size'] + "\n"
-            result += "<b>Version:</b> " + i['version'] + "\n"
-            result += "<b>Android:</b> " + i['android'] + "\n\n"
+            result += "<b>Size:</b> " + i["size"] + "\n"
+            result += "<b>Version:</b> " + i["version"] + "\n"
+            result += "<b>Android:</b> " + i["android"] + "\n\n"
 
         result += "<b>Weekly:</b>\n"
-        weekly_all = yaml.load(get(giturl + "weekly_recovery/weekly_recovery.yml").content, Loader=yaml.FullLoader)
-        data = [i for i in weekly_all if device == i['codename']]
+        weekly_all = yaml.load(
+            get(giturl + "weekly_recovery/weekly_recovery.yml").content,
+            Loader=yaml.FullLoader,
+        )
+        data = [i for i in weekly_all if device == i["codename"]]
         for i in data:
-            result += "<b>Device:</b> " + i['device'] + "\n"
+            result += "<b>Device:</b> " + i["device"] + "\n"
             result += f'<a href="{i["download"]}">{i["filename"]}</a>\n'
-            result += "<b>Size:</b> " + i['size'] + "\n"
-            result += "<b>Version:</b> " + i['version'] + "\n"
-            result += "<b>Android:</b> " + i['android'] + "\n\n"
+            result += "<b>Size:</b> " + i["size"] + "\n"
+            result += "<b>Version:</b> " + i["version"] + "\n"
+            result += "<b>Android:</b> " + i["android"] + "\n\n"
     else:
         result = "Couldn't find any device matching your query."
 
@@ -554,11 +722,15 @@ def miui(update, context):
 def pe(update, context):
     message = update.effective_message
     cmd = message.text.split()[0]
-    device = message.text[len(cmd) + 1:]
+    device = message.text[len(cmd) + 1 :]
 
-    if device == '':
-        reply_text = f"Please type your device **codename**!\nFor example, `{cmd} tissot`"
-        message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    if device == "":
+        reply_text = (
+            f"Please type your device **codename**!\nFor example, `{cmd} tissot`"
+        )
+        message.reply_text(
+            reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
         return
 
     if cmd.startswith("/peplus"):
@@ -571,28 +743,36 @@ def pe(update, context):
     else:
         variant = "pie"
 
-    fetch = get(f'https://download.pixelexperience.org/ota_v3/{device}/{variant}')
-    if not fetch.json()['error']:
+    fetch = get(f"https://download.pixelexperience.org/ota_v3/{device}/{variant}")
+    if not fetch.json()["error"]:
         usr = json.loads(fetch.content)
-        filename = usr['filename']
-        url = usr['url']
-        buildsize_a = usr['size']
+        filename = usr["filename"]
+        url = usr["url"]
+        buildsize_a = usr["size"]
         buildsize_b = sizee(int(buildsize_a))
-        version = usr['version']
+        version = usr["version"]
 
-        reply_text = (f"*PixelExperience build for {device}*\n"
-                      f"*Download:* [{filename}]({url})\n"
-                      f"*Build size:* `{buildsize_b}`\n"
-                      f"*Version:* `{version}`")
+        reply_text = (
+            f"*PixelExperience build for {device}*\n"
+            f"*Download:* [{filename}]({url})\n"
+            f"*Build size:* `{buildsize_b}`\n"
+            f"*Version:* `{version}`"
+        )
 
         keyboard = [[InlineKeyboardButton(text="Click to Download", url=url)]]
-        message.reply_text(reply_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode=ParseMode.MARKDOWN,
-                           disable_web_page_preview=True)
+        message.reply_text(
+            reply_text,
+            reply_markup=InlineKeyboardMarkup(keyboard),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
         return
 
     else:
         reply_text = "Device not found"
-    message.reply_text(reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True)
+    message.reply_text(
+        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    )
 
 
 @spamcheck
@@ -600,30 +780,35 @@ def pe(update, context):
 def specs(update, context):
     args = context.args
     if len(args) == 0:
-        update.effective_message.reply_html("Please type your device <b>brand</b> and <b>name</b>!\
-        \nFor example, <code>/specs Xiaomi Redmi Note 7</code>")
+        update.effective_message.reply_html(
+            "Please type your device <b>brand</b> and <b>name</b>!\
+        \nFor example, <code>/specs Xiaomi Redmi Note 7</code>"
+        )
         return
     brand = args[0].lower()
     device = " ".join(args[1:]).lower()
     if brand and device:
         pass
-    all_brands = BeautifulSoup(
-        get('https://www.devicespecifications.com/en/brand-more').content,
-        'lxml').find('div', {
-        'class': 'brand-listing-container-news'
-    }).findAll('a')
+    all_brands = (
+        BeautifulSoup(
+            get("https://www.devicespecifications.com/en/brand-more").content, "lxml"
+        )
+        .find("div", {"class": "brand-listing-container-news"})
+        .findAll("a")
+    )
     try:
         brand_page_url = [
-            i['href'] for i in all_brands if brand == i.text.strip().lower()
+            i["href"] for i in all_brands if brand == i.text.strip().lower()
         ][0]
     except IndexError:
-        update.effective_message.reply_html(f'<code>{brand}</code> is unknown brand!')
+        update.effective_message.reply_html(f"<code>{brand}</code> is unknown brand!")
         return
-    devices = BeautifulSoup(get(brand_page_url).content, 'lxml') \
-        .findAll('div', {'class': 'model-listing-container-80'})
+    devices = BeautifulSoup(get(brand_page_url).content, "lxml").findAll(
+        "div", {"class": "model-listing-container-80"}
+    )
     device_page_url = [
-        i.a['href']
-        for i in BeautifulSoup(str(devices), 'lxml').findAll('h3')
+        i.a["href"]
+        for i in BeautifulSoup(str(devices), "lxml").findAll("h3")
         if device in i.text.strip().lower()
     ]
     if not device_page_url:
@@ -631,16 +816,16 @@ def specs(update, context):
         return
     if len(device_page_url) > 2:
         device_page_url = device_page_url[:2]
-    reply = ''
+    reply = ""
     for url in device_page_url:
-        info = BeautifulSoup(get(url).content, 'lxml')
-        reply = '\n<b>' + info.title.text.split('-')[0].strip() + '</b>\n\n'
-        info = info.find('div', {'id': 'model-brief-specifications'})
-        specifications = re.findall(r'<b>.*?<br/>', str(info))
+        info = BeautifulSoup(get(url).content, "lxml")
+        reply = "\n<b>" + info.title.text.split("-")[0].strip() + "</b>\n\n"
+        info = info.find("div", {"id": "model-brief-specifications"})
+        specifications = re.findall(r"<b>.*?<br/>", str(info))
         for item in specifications:
-            title = re.findall(r'<b>(.*?)</b>', item)[0].strip()
-            data = re.findall(r'</b>: (.*?)<br/>', item)[0].strip()
-            reply += f'<b>{title}</b>: {data}\n'
+            title = re.findall(r"<b>(.*?)</b>", item)[0].strip()
+            data = re.findall(r"</b>: (.*?)<br/>", item)[0].strip()
+            reply += f"<b>{title}</b>: {data}\n"
     update.effective_message.reply_html(reply)
 
 
@@ -650,13 +835,14 @@ def phh(update, context):
     args = context.args
     message = update.effective_message
     fetch = get(
-        "https://api.github.com/repos/phhusson/treble_experimentations/releases/latest")
+        "https://api.github.com/repos/phhusson/treble_experimentations/releases/latest"
+    )
     usr = json.loads(fetch.content)
     reply_text = "*Phh's lastest release(s):*\n"
     for i in range(len(usr)):
         try:
-            name = usr['assets'][i]['name']
-            url = usr['assets'][i]['browser_download_url']
+            name = usr["assets"][i]["name"]
+            url = usr["assets"][i]["browser_download_url"]
             reply_text += f"[{name}]({url})\n"
         except IndexError:
             continue

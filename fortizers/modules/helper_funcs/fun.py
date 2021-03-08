@@ -14,14 +14,14 @@ AFKREPLY = (
 )
 
 NOAFK = (
-    '{} is here!',
-    '{} is no longer AFK!',
-    '{} is back!',
-    '{} is now in the chat!',
-    '{} is back online!',
-    '{} is finally here!',
-    'Welcome back! {}',
-    'OwO {} is here!'
+    "{} is here!",
+    "{} is no longer AFK!",
+    "{} is back!",
+    "{} is now in the chat!",
+    "{} is back online!",
+    "{} is finally here!",
+    "Welcome back! {}",
+    "OwO {} is here!",
 )
 
 AFK = (
@@ -31,5 +31,5 @@ AFK = (
     "Take your time, {} is now AFK!",
     "Goodbye {} You’re dead to me now.",
     "Come back soon {}!",
-    "K bye {}.."
+    "K bye {}..",
 )

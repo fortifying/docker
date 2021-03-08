@@ -29,9 +29,14 @@ def get_note_type(msg: Message):
     buttons = []
     # determine what the contents of the filter are - text, image, sticker, etc
     if len(args) >= 3:
-        offset = len(args[2]) - len(raw_text)  # set correct offset relative to command + notename
-        text, buttons = button_markdown_parser(args[2], entities=msg.parse_entities() or msg.parse_caption_entities(),
-                                               offset=offset)
+        offset = len(args[2]) - len(
+            raw_text
+        )  # set correct offset relative to command + notename
+        text, buttons = button_markdown_parser(
+            args[2],
+            entities=msg.parse_entities() or msg.parse_caption_entities(),
+            offset=offset,
+        )
         if buttons:
             data_type = Types.BUTTON_TEXT
         else:
@@ -41,8 +46,7 @@ def get_note_type(msg: Message):
         entities = msg.reply_to_message.parse_entities()
         msgtext = msg.reply_to_message.text or msg.reply_to_message.caption
         if len(args) >= 2 and msg.reply_to_message.text:  # not caption, text
-            text, buttons = button_markdown_parser(msgtext,
-                                                   entities=entities)
+            text, buttons = button_markdown_parser(msgtext, entities=entities)
             if buttons:
                 data_type = Types.BUTTON_TEXT
             else:
@@ -98,7 +102,9 @@ def get_welcome_type(msg: Message):
             else:
                 args = msg.reply_to_message.caption
         else:
-            args = msg.text.split(None, 1)  # use python's maxsplit to separate cmd and args
+            args = msg.text.split(
+                None, 1
+            )  # use python's maxsplit to separate cmd and args
     except AttributeError:
         args = False
 
@@ -141,14 +147,20 @@ def get_welcome_type(msg: Message):
     # determine what the contents of the filter are - text, image, sticker, etc
     if args:
         if msg.reply_to_message:
-            argumen = msg.reply_to_message.caption if msg.reply_to_message.caption else ""
-            offset = 0 # offset is no need since target was in reply
+            argumen = (
+                msg.reply_to_message.caption if msg.reply_to_message.caption else ""
+            )
+            offset = 0  # offset is no need since target was in reply
             entities = msg.reply_to_message.parse_entities()
         else:
             argumen = args[1]
-            offset = len(argumen) - len(msg.text)  # set correct offset relative to command + notename
+            offset = len(argumen) - len(
+                msg.text
+            )  # set correct offset relative to command + notename
             entities = msg.parse_entities()
-        text, buttons = button_markdown_parser(argumen, entities=entities, offset=offset)
+        text, buttons = button_markdown_parser(
+            argumen, entities=entities, offset=offset
+        )
 
     if not data_type:
         if text and buttons:
@@ -157,6 +169,7 @@ def get_welcome_type(msg: Message):
             data_type = Types.TEXT
 
     return text, data_type, content, buttons
+
 
 def get_message_type(msg: Message):
     data_type = None
@@ -168,9 +181,14 @@ def get_message_type(msg: Message):
     buttons = []
     # determine what the contents of the filter are - text, image, sticker, etc
     if len(args) >= 2:
-        offset = len(args[1]) - len(raw_text)  # set correct offset relative to command + notename
-        text, buttons = button_markdown_parser(args[1], entities=msg.parse_entities() or msg.parse_caption_entities(),
-                                               offset=offset)
+        offset = len(args[1]) - len(
+            raw_text
+        )  # set correct offset relative to command + notename
+        text, buttons = button_markdown_parser(
+            args[1],
+            entities=msg.parse_entities() or msg.parse_caption_entities(),
+            offset=offset,
+        )
         if buttons:
             data_type = Types.BUTTON_TEXT
         else:
@@ -180,8 +198,7 @@ def get_message_type(msg: Message):
         entities = msg.reply_to_message.parse_entities()
         msgtext = msg.reply_to_message.text or msg.reply_to_message.caption
         if len(args) >= 1 and msg.reply_to_message.text:  # not caption, text
-            text, buttons = button_markdown_parser(msgtext,
-                                                   entities=entities)
+            text, buttons = button_markdown_parser(msgtext, entities=entities)
             if buttons:
                 data_type = Types.BUTTON_TEXT
             else:
@@ -231,7 +248,11 @@ def get_filter_type(msg: Message):
         text = msg.text.split(None, 2)[2]
         data_type = Types.TEXT
 
-    elif msg.reply_to_message and msg.reply_to_message.text and len(msg.text.split()) >= 2:
+    elif (
+        msg.reply_to_message
+        and msg.reply_to_message.text
+        and len(msg.text.split()) >= 2
+    ):
         content = None
         text = msg.reply_to_message.text
         data_type = Types.TEXT

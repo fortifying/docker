@@ -24,7 +24,7 @@ def get_user_id(username):
     if len(username) <= 5:
         return None
 
-    if username.startswith('@'):
+    if username.startswith("@"):
         username = username[1:]
 
     users = sql.get_userid_by_name(username)
@@ -43,7 +43,7 @@ def get_user_id(username):
                     return userdat.id
 
             except BadRequest as excp:
-                if excp.message == 'Chat not found':
+                if excp.message == "Chat not found":
                     pass
                 else:
                     LOGGER.exception("Error extracting user ID")
@@ -63,10 +63,17 @@ def broadcast(update, context):
                 sleep(0.1)
             except TelegramError:
                 failed += 1
-                LOGGER.warning("Couldn't send broadcast to %s, group name %s", str(chat.chat_id), str(chat.chat_name))
+                LOGGER.warning(
+                    "Couldn't send broadcast to %s, group name %s",
+                    str(chat.chat_id),
+                    str(chat.chat_name),
+                )
 
-        send_message(update.effective_message, "Siaran selesai. {} grup gagal menerima pesan, mungkin "
-                                            "karena ditendang.".format(failed))
+        send_message(
+            update.effective_message,
+            "Siaran selesai. {} grup gagal menerima pesan, mungkin "
+            "karena ditendang.".format(failed),
+        )
 
 
 @run_async
@@ -83,32 +90,37 @@ def log_user(update, context):
         if user:
             fban, fbanreason, fbantime = fedsql.get_fban_user(fed_id, user.id)
             if fban:
-                send_message(update.effective_message, languages.tl(update.effective_message, "Pengguna ini dilarang di federasi saat ini!\nAlasan: `{}`").format(fbanreason), parse_mode="markdown")
+                send_message(
+                    update.effective_message,
+                    languages.tl(
+                        update.effective_message,
+                        "Pengguna ini dilarang di federasi saat ini!\nAlasan: `{}`",
+                    ).format(fbanreason),
+                    parse_mode="markdown",
+                )
                 try:
                     context.bot.kick_chat_member(chat.id, user.id)
                 except:
-                	print("Fban: cannot banned this user")
+                    print("Fban: cannot banned this user")
 
-    sql.update_user(msg.from_user.id,
-                    msg.from_user.username,
-                    chat.id,
-                    chat.title)
+    sql.update_user(msg.from_user.id, msg.from_user.username, chat.id, chat.title)
 
     if msg.reply_to_message:
-        sql.update_user(msg.reply_to_message.from_user.id,
-                        msg.reply_to_message.from_user.username,
-                        chat.id,
-                        chat.title)
+        sql.update_user(
+            msg.reply_to_message.from_user.id,
+            msg.reply_to_message.from_user.username,
+            chat.id,
+            chat.title,
+        )
 
     if msg.forward_from:
-        sql.update_user(msg.forward_from.id,
-                        msg.forward_from.username)
+        sql.update_user(msg.forward_from.id, msg.forward_from.username)
 
 
 @run_async
 def chats(update, context):
     all_chats = sql.get_all_chats() or []
-    chatfile = 'Daftar obrolan.\n0. Chat name | Chat ID | Members count | Invitelink\n'
+    chatfile = "Daftar obrolan.\n0. Chat name | Chat ID | Members count | Invitelink\n"
     P = 1
     for chat in all_chats:
         try:
@@ -120,7 +132,8 @@ def chats(update, context):
             else:
                 invitelink = "0"
             chatfile += "{}. {} | {} | {} | {}\n".format(
-                P, chat.chat_name, chat.chat_id, chat_members, invitelink)
+                P, chat.chat_name, chat.chat_id, chat_members, invitelink
+            )
             P = P + 1
         except:
             pass
@@ -130,18 +143,26 @@ def chats(update, context):
         update.effective_message.reply_document(
             document=output,
             filename="chatlist.txt",
-            caption="Berikut ini daftar obrolan dalam database saya.")
+            caption="Berikut ini daftar obrolan dalam database saya.",
+        )
 
 
 def __user_info__(user_id, chat_id):
     if user_id == dispatcher.bot.id:
-        return languages.tl(chat_id, """Saya telah melihatnya... Wow. Apakah mereka menguntit saya? Mereka ada di semua tempat yang sama dengan saya... oh. Ini aku.""")
+        return languages.tl(
+            chat_id,
+            """Saya telah melihatnya... Wow. Apakah mereka menguntit saya? Mereka ada di semua tempat yang sama dengan saya... oh. Ini aku.""",
+        )
     num_chats = sql.get_user_num_chats(user_id)
-    return languages.tl(chat_id, """Saya telah melihatnya <code>{}</code> obrolan total.""").format(num_chats)
+    return languages.tl(
+        chat_id, """Saya telah melihatnya <code>{}</code> obrolan total."""
+    ).format(num_chats)
 
 
 def __stats__():
-    return languages.tl(OWNER_ID, "{} pengguna, pada {} obrolan").format(sql.num_users(), sql.num_chats())
+    return languages.tl(OWNER_ID, "{} pengguna, pada {} obrolan").format(
+        sql.num_users(), sql.num_chats()
+    )
 
 
 def __migrate__(old_chat_id, new_chat_id):
@@ -152,11 +173,12 @@ __help__ = ""  # no help string
 
 __mod_name__ = "Users"
 
-BROADCAST_HANDLER = CommandHandler("broadcast", broadcast, filters=Filters.user(OWNER_ID))
+BROADCAST_HANDLER = CommandHandler(
+    "broadcast", broadcast, filters=Filters.user(OWNER_ID)
+)
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
 CHATLIST_HANDLER = CommandHandler("chatlist", chats, filters=CustomFilters.sudo_filter)
 
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
 dispatcher.add_handler(BROADCAST_HANDLER)
 dispatcher.add_handler(CHATLIST_HANDLER)
-
