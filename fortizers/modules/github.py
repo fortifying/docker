@@ -276,11 +276,19 @@ def repo(update, context):
     message = update.effective_message
     text = message.text[len("/repo ") :]
     usr = get(f"https://api.github.com/users/{text}/repos?per_page=40").json()
-    reply_text = "*Repo*\n"
+    reply_text = f"{text} Repository\n"
     for i in range(len(usr)):
         reply_text += f"[{usr[i]['name']}]({usr[i]['html_url']})\n"
-    message.reply_text(
-        reply_text, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+    except KeyError:
+        reply = f"Couldn't find Repository for {text}!\n"
+        update.effective_message.reply_text(
+            "{}".format(reply),
+            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
+        )
+        return
+    update.message.reply_text(
+        "{}".format(reply), parse_mode=ParseMode.HTML, disable_web_page_preview=True
     )
 
 
