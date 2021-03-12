@@ -279,7 +279,7 @@ def repo(update, context):
     reply_text = f"{text} Repository\n"
     for i in range(len(usr)):
         reply_text += f"[{usr[i]['name']}]({usr[i]['html_url']})\n"
-    except KeyError:
+      except KeyError:
         reply = f"Couldn't find Repository for {text}!\n"
         update.effective_message.reply_text(
             "{}".format(reply),
